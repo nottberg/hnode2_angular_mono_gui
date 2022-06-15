@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+    <mat-form-field>
+        <mat-hint>Name</mat-hint>
+        <input matInput placeholder="Name" formControlName="nameFC" (input)="onFieldUpdate('nameFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Description</mat-hint>
+        <input matInput placeholder="Description" formControlName="descriptionFC" (input)="onFieldUpdate('descriptionFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Seconds Per Week</mat-hint>
+        <input matInput placeholder="2400" formControlName="secPerWeekFC" (input)="onFieldUpdate('secPerWeekFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Maximum Cycle Time (Seconds)</mat-hint>
+        <input matInput placeholder="2" formControlName="maxCycleTimeFC" (input)="onFieldUpdate('maxCycleTimeFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Minimum Cycle Time (Seconds)</mat-hint>
+        <input matInput placeholder=120 formControlName="minCycleTimeFC" (input)="onFieldUpdate('minCycleTimeFC')"/>
+    </mat-form-field>
+    <br/>
+    <section class="switch-list-section">
+        Select zone switches:
+        <ul *ngFor="let switch of swList">
+            <li><mat-checkbox id="{{switch.swid}}" [checked]="switch.selected" (change)="onSwitchChange($event)">
+            {{switch.swid}} - {{switch.name}}
+            </mat-checkbox></li>
+        </ul>
+    </section>
+ 
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Close</button>
+    <button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+</mat-dialog-actions>
+
