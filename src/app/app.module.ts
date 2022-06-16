@@ -36,6 +36,8 @@ import { HnidScheduleComponent } from './hnid-schedule/hnid-schedule.component';
 import { HnidZonesComponent } from './hnid-zones/hnid-zones.component';
 import { HnidZoneEditDialogComponent } from './hnid-zone-edit-dialog/hnid-zone-edit-dialog.component';
 import { HnidConfirmDialogComponent } from './hnid-confirm-dialog/hnid-confirm-dialog.component';
+import { HnidPlacementEditDialogComponent } from './hnid-placement-edit-dialog/hnid-placement-edit-dialog.component';
+import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { HnidConfirmDialogComponent } from './hnid-confirm-dialog/hnid-confirm-d
     HnidScheduleComponent,
     HnidZonesComponent,
     HnidZoneEditDialogComponent,
-    HnidConfirmDialogComponent
+    HnidConfirmDialogComponent,
+    HnidPlacementEditDialogComponent,
+    HnidPlacementsComponent
   ],
   imports: [
     BrowserModule,

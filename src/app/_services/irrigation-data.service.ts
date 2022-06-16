@@ -19,7 +19,7 @@ export interface HNIrrZone {
   zoneid: string;
 };
 
-export interface HNIrrCriteria {
+export interface HNIrrPlacement {
   name: string;
   description: string;
   startTime: string;
@@ -27,7 +27,7 @@ export interface HNIrrCriteria {
   rank: number;
   dayList: string[];
   zoneList: string[];
-  criteriaid: string;
+  placementid: string;
 };
 
 export interface NamedObj {
@@ -51,7 +51,7 @@ export interface ZoneConfig {
   switchList: NamedObj[];
 };
 
-export interface Criteria {
+export interface Placement {
   name: string;
   description: string;
   startTime: string;
@@ -59,11 +59,11 @@ export interface Criteria {
   rank: number;
   dayList: string[];
   zoneList: string[];
-  criteriaid: string;
+  placementid: string;
 };
 
-export interface CriteriaConfig {
-  criteriaList: Criteria[];
+export interface PlacementConfig {
+  placementsList: Placement[];
   znmList: NamedObj[];
 };
 
@@ -313,49 +313,49 @@ export class IrrigationDataService {
 
   getPlacementsList( crc32ID : string ) {
     const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.placementsURL );
-    const rObs = this.http.get<HNIrrCriteria[]>( reqURL );
+    const rObs = this.http.get<HNIrrPlacement[]>( reqURL );
         
     return rObs.pipe(
-      map<HNIrrCriteria[], Criteria[]>(irrCriteria => {
-        let criteriaList : Criteria[] = [];
-        irrCriteria.forEach( irrCrit => {
-          let criteria : Criteria = {
-            name: irrCrit.name,
-            description: irrCrit.description,
-            startTime: irrCrit.startTime,
-            endTime: irrCrit.endTime,
-            rank: irrCrit.rank,
-            dayList: irrCrit.dayList,
-            zoneList: irrCrit.zoneList,
-            criteriaid: irrCrit.criteriaid
+      map<HNIrrPlacement[], Placement[]>(irrPlacement => {
+        let placementsList : Placement[] = [];
+        irrPlacement.forEach( irrPlat => {
+          let placement : Placement = {
+            name: irrPlat.name,
+            description: irrPlat.description,
+            startTime: irrPlat.startTime,
+            endTime: irrPlat.endTime,
+            rank: irrPlat.rank,
+            dayList: irrPlat.dayList,
+            zoneList: irrPlat.zoneList,
+            placementid: irrPlat.placementid
           }
-          criteriaList.push( criteria );
+          placementsList.push( placement );
         });
-        return criteriaList;
+        return placementsList;
       }))
 
   }
 
-  getPlacementsConfig( crc32ID: string ) : Observable<CriteriaConfig> {
-    const criteriaObs$ = this.getPlacementsList( crc32ID );
+  getPlacementsConfig( crc32ID: string ) : Observable<PlacementConfig> {
+    const placementsObs$ = this.getPlacementsList( crc32ID );
     const znmObs$ = this.getZoneNameList( crc32ID );
 
-    const combo$ = combineLatest([criteriaObs$, znmObs$]);
+    const combo$ = combineLatest([placementsObs$, znmObs$]);
 
     const cbObs$ = combo$.pipe(
-      map(([criteriaList, znmList]) => {
-        console.log(criteriaList);
+      map(([placementsList, znmList]) => {
+        console.log(placementsList);
         console.log(znmList);
 
-        const nullCriteria : Criteria[] = [];
+        const nullPlacement : Placement[] = [];
         const nullZNMList : NamedObj[] = [];
-        const criteriaCD : CriteriaConfig = {criteriaList: nullCriteria, znmList: nullZNMList};
+        const placementCD : PlacementConfig = {placementsList: nullPlacement, znmList: nullZNMList};
 
-        criteriaCD.criteriaList = criteriaList;
-        criteriaCD.znmList = znmList;
-        console.log(criteriaCD);
+        placementCD.placementsList = placementsList;
+        placementCD.znmList = znmList;
+        console.log(placementCD);
 
-        return criteriaCD;
+        return placementCD;
       })
     );
 
