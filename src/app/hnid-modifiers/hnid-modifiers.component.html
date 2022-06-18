@@ -1,0 +1,110 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+        <mat-nav-list>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}">
+                <mat-icon>other_houses</mat-icon>
+                Status
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/controls">
+                <mat-icon>build_circle</mat-icon>
+                Manual Control
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/schedule">
+                <mat-icon>schedule</mat-icon>
+                Schedule
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/zones">
+                <mat-icon>yard</mat-icon>
+                Zones
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/placements">
+                <mat-icon>punch_clock</mat-icon>
+                Placements
+            </a>            
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/modifiers">
+                <mat-icon>exposure</mat-icon>
+                Modifiers
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+            <mat-toolbar>
+                <button mat-button (click)="onEditButtonClick()">
+                    Edit
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-button (click)="onNewButtonClick()">
+                    Add
+                    <mat-icon>add_circle</mat-icon>
+                </button>
+                <button mat-button (click)="onDeleteButtonClick()">
+                    Delete
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-toolbar>
+                <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+                    <!-- Checkbox Column -->
+                    <ng-container matColumnDef="select">
+                      <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()">
+                        </mat-checkbox>
+                      </th>
+                      <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                      </td>
+                    </ng-container>
+
+                    <!-- Content Columns -->
+                    <ng-container matColumnDef="nameCol">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let mod"> {{mod.name}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="typeCol">
+                        <th mat-header-cell *matHeaderCellDef> Type </th>
+                        <td mat-cell *matCellDef="let mod"> {{mod.type}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="valueCol">
+                        <th mat-header-cell *matHeaderCellDef> Value </th>
+                        <td mat-cell *matCellDef="let mod"> {{mod.value}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="zoneCol">
+                        <th mat-header-cell *matHeaderCellDef> Zone </th>
+                        <td mat-cell *matCellDef="let mod"> {{getZoneName(mod.zoneid)}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="expand">
+                        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                        <td mat-cell *matCellDef="let mod">
+                          <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === mod ? null : mod); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== mod">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === mod">keyboard_arrow_up</mat-icon>
+                          </button>
+                        </td>
+                    </ng-container>
+
+                    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                    <ng-container matColumnDef="expandedDetail">
+                      <td mat-cell *matCellDef="let mod" [attr.colspan]="columnsToDisplayWithExpand.length">
+                        <div class="mod-detail" [@detailExpand]="mod == expandedElement ? 'expanded' : 'collapsed'">
+                          <div class="mod-detail-desc">
+                              {{mod.description}}
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <!-- Row def -->
+                    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+                    <tr mat-row *matRowDef="let mod; columns: columnsToDisplayWithExpand;"
+                        class="mod-row"
+                        [class.mod-expanded-row]="expandedElement === mod"
+                        (click)="expandedElement = expandedElement === mod ? null : mod">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="mod-detail-row"></tr>
+                </table>
+    </mat-sidenav-content>        
+</mat-sidenav-container>        

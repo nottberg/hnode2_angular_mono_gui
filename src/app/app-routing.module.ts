@@ -9,6 +9,7 @@ import { Hnode2IrrigationDeviceComponent } from './hnode2-irrigation-device/hnod
 import { HnidScheduleComponent } from './hnid-schedule/hnid-schedule.component';
 import { HnidZonesComponent } from './hnid-zones/hnid-zones.component';
 import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.component';
+import { HnidModifiersComponent } from './hnid-modifiers/hnid-modifiers.component';
 import { Hnode2TestDeviceComponent } from './hnode2-test-device/hnode2-test-device.component';
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'hnode2-irrigation-device/:crc32ID/schedule', component: HnidScheduleComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/zones', component: HnidZonesComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/placements', component: HnidPlacementsComponent },
+  { path: 'hnode2-irrigation-device/:crc32ID/modifiers', component: HnidModifiersComponent },
   { path: 'hnode2-test-device/:crc32ID', component: Hnode2TestDeviceComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];

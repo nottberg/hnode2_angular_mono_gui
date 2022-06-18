@@ -30,6 +30,15 @@ export interface HNIrrPlacement {
   placementid: string;
 };
 
+export interface HNIrrModifier {
+  name: string;
+  description: string;
+  type: string;
+  value: string;
+  zoneid: string;
+  modifierid: string;
+};
+
 export interface NamedObj {
   id: string;
   name: string;
@@ -64,6 +73,20 @@ export interface Placement {
 
 export interface PlacementConfig {
   placementsList: Placement[];
+  znmList: NamedObj[];
+};
+
+export interface Modifier {
+  name: string;
+  description: string;
+  type: string;
+  value: string;
+  zoneid: string;
+  modifierid: string;
+};
+
+export interface ModifiersConfig {
+  modifiersList: Modifier[];
   znmList: NamedObj[];
 };
 
@@ -147,6 +170,12 @@ export interface Status {
   timezone: string;
 };
 
+export interface NMObjSelectionTracker {
+  id: string;
+  name: string;
+  selected: boolean;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -157,6 +186,7 @@ export class IrrigationDataService {
   private switchURL = 'hnode2/irrigation/switches';
   private zonesURL = 'hnode2/irrigation/zones';
   private placementsURL = 'hnode2/irrigation/placement';
+  private modifiersURL = 'hnode2/irrigation/modifier';
   private schURL = 'hnode2/irrigation/schedule';
   private statusURL = 'hnode2/irrigation/status';
 
@@ -377,4 +407,67 @@ export class IrrigationDataService {
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
+  getModifiersList( crc32ID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.modifiersURL );
+    const rObs = this.http.get<HNIrrModifier[]>( reqURL );
+        
+    return rObs.pipe(
+      map<HNIrrModifier[], Modifier[]>(irrModifier => {
+        let modifiersList : Modifier[] = [];
+        irrModifier.forEach( irrMod => {
+          let modifier : Modifier = {
+            name: irrMod.name,
+            description: irrMod.description,
+            type: irrMod.type,
+            value: irrMod.value,
+            zoneid: irrMod.zoneid,
+            modifierid: irrMod.modifierid
+          }
+          modifiersList.push( modifier );
+        });
+        return modifiersList;
+      }))
+
+  }
+
+  getModifiersConfig( crc32ID: string ) : Observable<ModifiersConfig> {
+    const modifiersObs$ = this.getModifiersList( crc32ID );
+    const znmObs$ = this.getZoneNameList( crc32ID );
+
+    const combo$ = combineLatest([modifiersObs$, znmObs$]);
+
+    const cbObs$ = combo$.pipe(
+      map(([modifiersList, znmList]) => {
+        console.log(modifiersList);
+        console.log(znmList);
+
+        const nullModifiers : Modifier[] = [];
+        const nullZNMList : NamedObj[] = [];
+        const modifiersCD : ModifiersConfig = {modifiersList: nullModifiers, znmList: nullZNMList};
+
+        modifiersCD.modifiersList = modifiersList;
+        modifiersCD.znmList = znmList;
+        console.log(modifiersCD);
+
+        return modifiersCD;
+      })
+    );
+
+    return cbObs$;
+  }
+
+  putUpdateModifier( crc32ID: string, mid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.modifiersURL, mid );
+    return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
+  }
+
+  postCreateModifier( crc32ID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.modifiersURL );
+    return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
+  }
+
+  deleteModifier( crc32ID: string, mid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.modifiersURL, mid );
+    return this.http.delete( reqURL, { observe: 'response' } );
+  }
 }

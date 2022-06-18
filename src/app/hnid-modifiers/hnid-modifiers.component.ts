@@ -1,35 +1,36 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { HnidPlacementEditDialogComponent, PEUPD_NAME, PEUPD_DESC, PEUPD_RANK, PEUPD_STIME, PEUPD_ETIME, PEUPD_DAYLST, PEUPD_ZONELST } from '../hnid-placement-edit-dialog/hnid-placement-edit-dialog.component';
-import { HnidConfirmDialogComponent } from '../hnid-confirm-dialog/hnid-confirm-dialog.component';
-import { IrrigationDataService, NamedObj, Placement } from '../_services/irrigation-data.service';
+import { IrrigationDataService, Modifier, NamedObj } from '../_services/irrigation-data.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'app-hnid-placements',
-  templateUrl: './hnid-placements.component.html',
-  styleUrls: ['./hnid-placements.component.scss']
+  selector: 'app-hnid-modifiers',
+  templateUrl: './hnid-modifiers.component.html',
+  styleUrls: ['./hnid-modifiers.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
-export class HnidPlacementsComponent implements OnInit {
+export class HnidModifiersComponent implements OnInit {
   crc32ID : string | null;
   errMsg : string;
 
   znmList: NamedObj[] = [];
+  modifiersList: Modifier[] = [];
 
-  placementsList: Placement[] = [];
-  selectedIndex: number = 0;
-  selected: string = "";
+  dataSource = new MatTableDataSource<Modifier>( this.modifiersList );
+  selection = new SelectionModel<Modifier>( true, [] );
 
-  curPID: string = "";
-
-  nameFC: string = "";
-  descriptionFC: string = "";
-  startTimeFC: string = "";
-  endTimeFC: string = "";
-  rankFC: number = 0;
-
-  dayListFC: string[] = [];
-  zoneListFC: string[] = [];
+  columnsToDisplay : string[] = ['select', 'nameCol', 'typeCol', 'valueCol', 'zoneCol'];
+  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+  expandedElement: Modifier | null = null;
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
     this.crc32ID = null;
@@ -37,20 +38,22 @@ export class HnidPlacementsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.crc32ID = params.get('crc32ID');
+      console.log(this.crc32ID);
       const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-      this.irrData.getPlacementsConfig( tmpID ).subscribe({
-        next: data => {
-          this.placementsList = data.placementsList;
+      this.irrData.getModifiersConfig( tmpID ).subscribe({
+      next: data => {
+          this.modifiersList = data.modifiersList;
           this.znmList = data.znmList;
-          this.setSelectedPlacementByIndex( 0 );
-          console.log( this.placementsList );
-          console.log( this.znmList );       
+          this.dataSource.data = this.modifiersList;
+          //this.setSelectedPlacementByIndex( 0 );
+          console.log( this.modifiersList );
+          console.log( this.znmList );
         },
         error: err => {
-          this.placementsList = [];
+          this.modifiersList = [];
+          this.dataSource.data = this.modifiersList;
           this.znmList = []; 
           this.errMsg = JSON.parse(err.error).message;
         }
@@ -59,104 +62,44 @@ export class HnidPlacementsComponent implements OnInit {
 
   }
 
-  setFormFields( placement: Placement ): void
-  {
-    this.nameFC = placement.name;
-    this.descriptionFC = placement.description;
-    this.startTimeFC = placement.startTime;
-    this.endTimeFC = placement.endTime;
-    this.rankFC = placement.rank;
-
-    if( placement.dayList.length == 0 )
-      this.dayListFC = ["Daily"];
-    else
-      this.dayListFC = placement.dayList;
-
-    if( placement.zoneList.length == 0 )
-      this.zoneListFC = ["All Zones"];
-    else      
-      this.zoneListFC = placement.zoneList;
-
-    this.curPID = placement.placementid;
-  }
-
-  setSelectedPlacementByIndex( index: number ): void
-  {
-      this.selectedIndex = index;
-      this.selected = this.placementsList[index].placementid;
-
-      this.setFormFields( this.placementsList[index] );
-  }
-
-  setSelectedPlacementByID( id: string ): void
-  {
-    if( this.placementsList.length == 0 )
-    return;
-
-    let index = 0;
-    for( index = 0; index < this.placementsList.length; index++ )
+  getZoneName( zoneid: string ) : string {
+    for( let i = 0; i < this.znmList.length; i++ )
     {
-      console.log( index );
-      console.log( "placementid: " + this.placementsList[ index ].placementid );
-      console.log( "id: " + id );
-      if( this.placementsList[ index ].placementid == id )
-      {
-          console.log( "Found placement" );
-          this.setSelectedPlacementByIndex( index );
-          return;
-      }
+      if( this.znmList[i].id == zoneid )
+        return this.znmList[i].name;
     }
 
-    this.setSelectedPlacementByIndex(0);
+    return "Not Found (" + zoneid + ")";
   }
 
-  nextSelectedPlacement(): void
-  {
-    if( this.placementsList.length == 0 )
-      return;
-
-    let index = this.selectedIndex;
-    index += 1;
-    if( index >= this.placementsList.length )
-      index = 0;
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
     
-    this.setSelectedPlacementByIndex( index );
-  }
-
-  prevSelectedPlacement(): void
-  {
-    if( this.placementsList.length == 0 )
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
       return;
-
-    let index = this.selectedIndex;
-    if( index == 0 )
-      index = (this.placementsList.length - 1);
-    else
-      index -= 1;
+    }
     
-    this.setSelectedPlacementByIndex( index );
+    this.selection.select(...this.dataSource.data);
   }
-
-  onPlacementSelectChange(): void
-  {
-      console.log( "Zone Selection Change: " + this.selected  );
-      this.setSelectedPlacementByID( this.selected );
-  }
-  
-  onNextButtonClick(): void
-  {
-      console.log( "Next Button Click" );
-      this.nextSelectedPlacement();
-  }
-
-  onPrevButtonClick(): void
-  {
-    console.log( "Prev Button Click" );
-    this.prevSelectedPlacement();
-  }
+    
+  /** The label for the checkbox on the passed row */
+  //checkboxLabel(row?: Modifier): string {
+  //  if (!row) {
+  //    return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+  //  }
+  //  return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  //}
 
   onEditButtonClick(): void
   {
+    /*
     const dialogCfg = new MatDialogConfig();
 
     dialogCfg.autoFocus = true;
@@ -221,10 +164,12 @@ export class HnidPlacementsComponent implements OnInit {
           console.log("dialog Canceled");
         }
     );
+    */
   }
 
   onNewButtonClick(): void
   {
+    /*
     const dialogCfg = new MatDialogConfig();
 
     dialogCfg.autoFocus = true;
@@ -282,11 +227,12 @@ export class HnidPlacementsComponent implements OnInit {
           console.log("dialog Canceled");
         }
     );
-
+*/
   }
 
   onDeleteButtonClick(): void
   {
+    /*
     const dialogCfg = new MatDialogConfig();
 
     dialogCfg.autoFocus = true;
@@ -324,6 +270,7 @@ export class HnidPlacementsComponent implements OnInit {
           console.log("dialog Canceled");
         }
     );
+    */
   }
 
 }

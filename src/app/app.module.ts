@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
@@ -38,6 +39,8 @@ import { HnidZoneEditDialogComponent } from './hnid-zone-edit-dialog/hnid-zone-e
 import { HnidConfirmDialogComponent } from './hnid-confirm-dialog/hnid-confirm-dialog.component';
 import { HnidPlacementEditDialogComponent } from './hnid-placement-edit-dialog/hnid-placement-edit-dialog.component';
 import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.component';
+import { HnidModifiersComponent } from './hnid-modifiers/hnid-modifiers.component';
+import { HnidModifiersEditDialogComponent } from './hnid-modifiers-edit-dialog/hnid-modifiers-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,9 @@ import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.compo
     HnidZoneEditDialogComponent,
     HnidConfirmDialogComponent,
     HnidPlacementEditDialogComponent,
-    HnidPlacementsComponent
+    HnidPlacementsComponent,
+    HnidModifiersComponent,
+    HnidModifiersEditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +83,7 @@ import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.compo
     MatTabsModule,
     MatSidenavModule,
     MatListModule,
+    MatGridListModule,
     FormsModule,
     ReactiveFormsModule    
   ],

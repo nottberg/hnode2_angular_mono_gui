@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { NMObjSelectionTracker } from '../_services/irrigation-data.service';
 
 // Bitfield values for tracking updates
 export const PEUPD_NONE    = 0;  // 0b00000000
@@ -12,13 +13,6 @@ export const PEUPD_ETIME   = 16; // 0b00010000
 export const PEUPD_DAYLST  = 32; // 0b00100000
 export const PEUPD_ZONELST = 64; // 0b01000000
 
-interface ListValue
-{
-  id: string;
-  name: string;
-  selected: boolean;
-}
-
 @Component({
   selector: 'app-hnid-placement-edit-dialog',
   templateUrl: './hnid-placement-edit-dialog.component.html',
@@ -29,8 +23,8 @@ export class HnidPlacementEditDialogComponent implements OnInit {
   form!: FormGroup;
   description: string;
 
-  dayList : ListValue[];
-  zoneList : ListValue[];
+  dayList : NMObjSelectionTracker[];
+  zoneList : NMObjSelectionTracker[];
 
   nameFC: string = "";
   descriptionFC: string = "";
@@ -70,23 +64,28 @@ export class HnidPlacementEditDialogComponent implements OnInit {
     }
 
     this.zoneList = [
-    {id: "allzones", name: "All Zones", selected: false},
-    {id: "z1", name: "Front Yard", selected: false},
-    {id: "z2", name: "Dog Paddock 1", selected: false}
+      {id: "allzones", name: "All Zones", selected: false},
     ];
 
     console.log(data);
-    console.log(this.zoneList);
-
+  
     if( data.zoneArr.length == 0 )
       this.zoneList[0].selected = true;   
     else
     {
+      for( let i = 0; i < data.zoneAvail.length; i++ )
+      {
+        const zlvObj : NMObjSelectionTracker = {id: data.zoneAvail[i].id, name: data.zoneAvail[i].name, selected: false};
+        this.zoneList.push(zlvObj);
+      }
+
       for( let i = 0; i < data.zoneArr.length; i++ )
         for( let j = 1; j < this.zoneList.length; j++ )
-          if( data.zoneArr[i] == this.zoneList[j].name )
+          if( data.zoneArr[i] == this.zoneList[j].id )
             this.zoneList[j].selected = true;
     }
+  
+    console.log(this.zoneList);
 
     if( 'nameFC' in data )
       this.nameFC = data.nameFC;
