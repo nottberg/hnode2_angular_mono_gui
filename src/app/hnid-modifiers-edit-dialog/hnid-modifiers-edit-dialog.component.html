@@ -4,27 +4,33 @@
 
     <mat-form-field>
         <mat-hint>Name</mat-hint>
-        <input matInput placeholder="Name" formControlName="nameFC" (input)="onFieldUpdate('nameFC')"/>
+        <input matInput formControlName="nameFC" (input)="onFieldUpdate('nameFC')"/>
     </mat-form-field>
     <br/>
     <mat-form-field>
         <mat-hint>Description</mat-hint>
-        <input matInput placeholder="Description" formControlName="descriptionFC" (input)="onFieldUpdate('descriptionFC')"/>
+        <input matInput formControlName="descriptionFC" (input)="onFieldUpdate('descriptionFC')"/>
     </mat-form-field>
     <br/>
     <mat-form-field>
         <mat-hint>Type</mat-hint>
-        <input matInput placeholder="local.duration" formControlName="typeFC" (input)="onFieldUpdate('typeFC')"/>
+        <mat-select [(value)]="typeSelected">
+            <mat-option value="local.duration">Local Duration</mat-option>
+            <mat-option value="local.percentage">Local Percentage</mat-option>
+        </mat-select>
+        <!-- <input matInput formControlName="typeFC" (input)="onFieldUpdate('typeFC')"/> -->
     </mat-form-field>
     <br/>
     <mat-form-field>
         <mat-hint>Value</mat-hint>
-        <input matInput placeholder="0" formControlName="valueFC" (input)="onFieldUpdate('valueFC')"/>
+        <input matInput formControlName="valueFC" (input)="onFieldUpdate('valueFC')"/>
     </mat-form-field>
     <br/>
     <mat-form-field>
         <mat-hint>Zone</mat-hint>
-        <input matInput placeholder="" formControlName="zoneidFC" (input)="onFieldUpdate('zoneidFC')"/>
+        <mat-select [(value)]="zoneSelected">
+            <mat-option *ngFor="let zone of zoneAvail" [value]="zone.id">{{zone.name}}</mat-option>
+        </mat-select>
     </mat-form-field>
     <br/>
 </mat-dialog-content>

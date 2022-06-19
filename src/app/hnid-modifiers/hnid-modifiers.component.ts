@@ -77,6 +77,15 @@ export class HnidModifiersComponent implements OnInit {
     return "Zone Not Found (" + zoneid + ")";
   }
 
+  getTypeStr( type: string ) : string {
+    if( type == "local.duration" )
+      return "Local Duration";
+    else if( type == "local.percentage" )
+      return "Local Percentage";
+
+    return "Unknown (" + type + ")";
+  }
+  
   onEditButtonClick(): void
   {
     const dialogCfg = new MatDialogConfig();
