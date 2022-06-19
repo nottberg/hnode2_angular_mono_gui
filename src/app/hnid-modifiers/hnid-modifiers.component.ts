@@ -4,6 +4,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { IrrigationDataService, Modifier, NamedObj } from '../_services/irrigation-data.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
+import { HnidModifiersEditDialogComponent, MUPD_NAME, MUPD_DESC, MUPD_TYPE, MUPD_VALUE, MUPD_ZONE } from '../hnid-modifiers-edit-dialog/hnid-modifiers-edit-dialog.component';
+import { HnidConfirmDialogComponent } from '../hnid-confirm-dialog/hnid-confirm-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -26,7 +28,7 @@ export class HnidModifiersComponent implements OnInit {
   modifiersList: Modifier[] = [];
 
   dataSource = new MatTableDataSource<Modifier>( this.modifiersList );
-  selection = new SelectionModel<Modifier>( true, [] );
+  selection = new SelectionModel<Modifier>( false, [] );
 
   columnsToDisplay : string[] = ['select', 'nameCol', 'typeCol', 'valueCol', 'zoneCol'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
@@ -37,29 +39,32 @@ export class HnidModifiersComponent implements OnInit {
     this.errMsg = "";     
   }
 
+  refreshModifiersConfig() : void {
+    this.selection.clear();
+    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    this.irrData.getModifiersConfig( tmpID ).subscribe({
+      next: data => {
+        this.modifiersList = data.modifiersList;
+        this.znmList = data.znmList;
+        this.dataSource.data = this.modifiersList;
+        console.log( this.modifiersList );
+        console.log( this.znmList );
+      },
+      error: err => {
+        this.modifiersList = [];
+        this.dataSource.data = this.modifiersList;
+        this.znmList = []; 
+        this.errMsg = JSON.parse(err.error).message;
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.crc32ID = params.get('crc32ID');
       console.log(this.crc32ID);
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-      this.irrData.getModifiersConfig( tmpID ).subscribe({
-      next: data => {
-          this.modifiersList = data.modifiersList;
-          this.znmList = data.znmList;
-          this.dataSource.data = this.modifiersList;
-          //this.setSelectedPlacementByIndex( 0 );
-          console.log( this.modifiersList );
-          console.log( this.znmList );
-        },
-        error: err => {
-          this.modifiersList = [];
-          this.dataSource.data = this.modifiersList;
-          this.znmList = []; 
-          this.errMsg = JSON.parse(err.error).message;
-        }
-      });
+      this.refreshModifiersConfig();
     });
-
   }
 
   getZoneName( zoneid: string ) : string {
@@ -69,176 +74,125 @@ export class HnidModifiersComponent implements OnInit {
         return this.znmList[i].name;
     }
 
-    return "Not Found (" + zoneid + ")";
+    return "Zone Not Found (" + zoneid + ")";
   }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-    
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
-    }
-    
-    this.selection.select(...this.dataSource.data);
-  }
-    
-  /** The label for the checkbox on the passed row */
-  //checkboxLabel(row?: Modifier): string {
-  //  if (!row) {
-  //    return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-  //  }
-  //  return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
-  //}
 
   onEditButtonClick(): void
   {
-    /*
     const dialogCfg = new MatDialogConfig();
 
     dialogCfg.autoFocus = true;
 
+    console.log(this.selection);
+    
+    if( this.selection.selected.length != 1 )
+      return;
+
+    let curMod : Modifier = this.selection.selected[0];
+
     dialogCfg.data = {
-      description: 'Edit Schedule Placement',
-      nameFC: this.nameFC,
-      descriptionFC: this.descriptionFC,
-      rankFC: this.rankFC,
-      startTimeFC: this.startTimeFC,      
-      endTimeFC: this.endTimeFC,
-      dayArr: this.placementsList[ this.selectedIndex ].dayList,
-      zoneArr: this.placementsList[ this.selectedIndex ].zoneList,
+      description: 'Edit Zone Modifier',
+      curMod: curMod,
       zoneAvail: this.znmList
     };
 
-    const dialogRef = this.dialog.open( HnidPlacementEditDialogComponent, dialogCfg );
+    const dialogRef = this.dialog.open( HnidModifiersEditDialogComponent, dialogCfg );
 
     dialogRef.afterClosed().subscribe(
       data => {
         if( data )
         {
-          var updateFields: Record<string,any> = {zoneID: this.curPID};
+          var updateFields: Record<string,any> = {modID: curMod.modifierid};
           console.log("Dialog output:", data);
           
-          if( data.updFlags & PEUPD_NAME )
+          if( data.updFlags & MUPD_NAME )
             updateFields['name'] = data.form.nameFC;
-          if( data.updFlags & PEUPD_DESC )
+          if( data.updFlags & MUPD_DESC )
             updateFields['description'] = data.form.descriptionFC;
-          if( data.updFlags & PEUPD_RANK )
-            updateFields['rank'] = data.form.rankFC;
-          if( data.updFlags & PEUPD_STIME )
-            updateFields['startTime'] = data.form.startTimeFC;
-          if( data.updFlags & PEUPD_ETIME )
-            updateFields['endTime'] = data.form.endTimeFC;
-          if( data.updFlags & PEUPD_DAYLST )
-            updateFields['dayList'] = data.dayArr;
-          if( data.updFlags & PEUPD_ZONELST )
-            updateFields['zoneList'] = data.zoneArr;
+          if( data.updFlags & MUPD_TYPE )
+            updateFields['type'] = data.form.typeFC;
+          if( data.updFlags & MUPD_VALUE )
+            updateFields['value'] = data.form.valueFC;
+          if( data.updFlags & MUPD_ZONE )
+            updateFields['zoneid'] = data.form.zoneidFC;
           
           console.log( updateFields );
 
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-          this.irrData.putUpdatePlacement( tmpID, this.curPID, updateFields ).subscribe(resp=>{
-            this.irrData.getPlacementsConfig( tmpID ).subscribe({
-              next: data => {
-                this.placementsList = data.placementsList;
-                this.znmList = data.znmList;
-                this.setSelectedPlacementByIndex( 0 );
-                console.log( this.placementsList );
-                console.log( this.znmList );       
-              },
-              error: err => {
-                this.placementsList = [];
-                this.znmList = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+          this.irrData.putUpdateModifier( tmpID, curMod.modifierid, updateFields ).subscribe(resp=>{
+            console.log("Modifier updated")
+            this.refreshModifiersConfig();
           });
         }
         else
           console.log("dialog Canceled");
-        }
+      }
     );
-    */
   }
 
   onNewButtonClick(): void
   {
-    /*
     const dialogCfg = new MatDialogConfig();
+    const nullMod: Modifier = {modifierid: "", name: "", description: "", type: "", value: "", zoneid: ""};
 
     dialogCfg.autoFocus = true;
 
     dialogCfg.data = {
       description: 'Create Schedule Placement',
+      curMod: nullMod,
       zoneAvail: this.znmList
     };
 
-    const dialogRef = this.dialog.open( HnidPlacementEditDialogComponent, dialogCfg );
+    const dialogRef = this.dialog.open( HnidModifiersEditDialogComponent, dialogCfg );
 
     dialogRef.afterClosed().subscribe(
       data => {
         if( data )
         {
-          var updateFields: Record<string,any> = {};
+          var updateFields: Record<string,any> = {modID: ""};
           console.log("Dialog output:", data);
           
-          if( data.updFlags & PEUPD_NAME )
+          if( data.updFlags & MUPD_NAME )
             updateFields['name'] = data.form.nameFC;
-          if( data.updFlags & PEUPD_DESC )
+          if( data.updFlags & MUPD_DESC )
             updateFields['description'] = data.form.descriptionFC;
-          if( data.updFlags & PEUPD_RANK )
-            updateFields['rank'] = data.form.rankFC;
-          if( data.updFlags & PEUPD_STIME )
-            updateFields['startTime'] = data.form.startTimeFC;
-          if( data.updFlags & PEUPD_ETIME )
-            updateFields['endTime'] = data.form.endTimeFC;
-          if( data.updFlags & PEUPD_DAYLST )
-            updateFields['dayList'] = data.dayArr;
-          if( data.updFlags & PEUPD_ZONELST )
-            updateFields['zoneList'] = data.zoneArr;
+          if( data.updFlags & MUPD_TYPE )
+            updateFields['type'] = data.form.typeFC;
+          if( data.updFlags & MUPD_VALUE )
+            updateFields['value'] = data.form.valueFC;
+          if( data.updFlags & MUPD_ZONE )
+            updateFields['zoneid'] = data.form.zoneidFC;
 
           console.log( updateFields );
 
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-          this.irrData.postCreatePlacement( tmpID, updateFields ).subscribe(resp=>{
-            this.irrData.getPlacementsConfig( tmpID ).subscribe({
-              next: data => {
-                this.placementsList = data.placementsList;
-                this.znmList = data.znmList;
-                this.setSelectedPlacementByIndex( 0 );
-                console.log( this.placementsList );
-                console.log( this.znmList );       
-              },
-              error: err => {
-                this.placementsList = [];
-                this.znmList = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+          this.irrData.postCreateModifier( tmpID, updateFields ).subscribe(resp=>{
+            console.log("Modifier Created")
+            this.refreshModifiersConfig();
           });
         }
         else
           console.log("dialog Canceled");
-        }
+      }
     );
-*/
+
   }
 
   onDeleteButtonClick(): void
   {
-    /*
     const dialogCfg = new MatDialogConfig();
 
     dialogCfg.autoFocus = true;
 
+    console.log(this.selection);
+    
+    if( this.selection.selected.length != 1 )
+      return;
+
+    let curMod : Modifier = this.selection.selected[0];
+
     dialogCfg.data = {
-      prompt: 'Delete placement - ' + this.nameFC
+      prompt: 'Delete placement - ' + curMod.name
     };
 
     const dialogRef = this.dialog.open( HnidConfirmDialogComponent, dialogCfg );
@@ -249,28 +203,15 @@ export class HnidModifiersComponent implements OnInit {
         {
           console.log("Delete confirmed");
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-          this.irrData.deletePlacement( tmpID, this.curPID ).subscribe(resp=>{
-            this.irrData.getPlacementsConfig( tmpID ).subscribe({
-              next: data => {
-                this.placementsList = data.placementsList;
-                this.znmList = data.znmList;
-                this.setSelectedPlacementByIndex( 0 );
-                console.log( this.placementsList );
-                console.log( this.znmList );       
-              },
-              error: err => {
-                this.placementsList = [];
-                this.znmList = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+          this.irrData.deleteModifier( tmpID, curMod.modifierid ).subscribe(resp=>{
+            console.log("Modifier Deleted")
+            this.refreshModifiersConfig();
           });
         }
         else
           console.log("dialog Canceled");
-        }
+      }
     );
-    */
   }
 
 }
