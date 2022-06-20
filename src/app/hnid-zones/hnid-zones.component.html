@@ -29,6 +29,92 @@
     </mat-sidenav>
     <mat-sidenav-content>
 
+        <mat-toolbar>
+            <h2>Irrigation Zone Actions:</h2>
+            <button mat-button (click)="onNewButtonClick()">
+                Add
+                <mat-icon>add_circle</mat-icon>
+            </button>
+            <button mat-button (click)="onEditButtonClick()">
+                Edit
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-button (click)="onDeleteButtonClick()">
+                Delete
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-toolbar>
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>Select</th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+        
+                <!-- Content Columns -->
+                <ng-container matColumnDef="nameCol">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let zone"> {{zone.name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="secPerWeekCol">
+                    <th mat-header-cell *matHeaderCellDef> Duration Per Week </th>
+                    <td mat-cell *matCellDef="let zone"> {{formatDurationStr(zone.secondsPerWeek)}} </td>
+                </ng-container>
+                <ng-container matColumnDef="minCycleTimeCol">
+                    <th mat-header-cell *matHeaderCellDef> Minimum Cycle Duration </th>
+                    <td mat-cell *matCellDef="let zone"> {{formatDurationStr(zone.secondsMinCycle)}} </td>
+                </ng-container>
+                <ng-container matColumnDef="maxCycleTimeCol">
+                    <th mat-header-cell *matHeaderCellDef> Maximum Cycle Duration </th>
+                    <td mat-cell *matCellDef="let zone"> {{formatDurationStr(zone.secondsMaxCycle)}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let zone">
+                      <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === zone ? null : zone); $event.stopPropagation()">
+                        <mat-icon *ngIf="expandedElement !== zone">keyboard_arrow_down</mat-icon>
+                        <mat-icon *ngIf="expandedElement === zone">keyboard_arrow_up</mat-icon>
+                      </button>
+                    </td>
+                </ng-container>
+
+                <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                <ng-container matColumnDef="expandedDetail">
+                  <td mat-cell *matCellDef="let zone" [attr.colspan]="columnsToDisplayWithExpand.length">
+                    <div class="mod-detail" [@detailExpand]="zone == expandedElement ? 'expanded' : 'collapsed'">
+                      <mat-list>
+                        <mat-list-item>
+                          <h4 mat-line>Description</h4>
+                          <p mat-line>{{zone.description}}</p>
+                        </mat-list-item>
+                        <mat-list-item>
+                          <h4 mat-line>Switch List</h4>  
+                          <mat-chip-list mat-line>
+                            <mat-chip *ngFor="let swid of zone.swidList">{{getSwitchName(swid)}}</mat-chip>
+                          </mat-chip-list>
+                        </mat-list-item>
+                      </mat-list>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <!-- Row def -->
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+                <tr mat-row *matRowDef="let zone; columns: columnsToDisplayWithExpand;"
+                    class="mod-row"
+                    [class.mod-expanded-row]="expandedElement === zone"
+                    (click)="expandedElement = expandedElement === zone ? null : zone">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="mod-detail-row"></tr>
+            </table>
+
+<!--
 <div>
     <button mat-button (click)="onPrevButtonClick()">
             <mat-icon>navigate_before</mat-icon>
@@ -75,6 +161,7 @@
         </tr>
     </table>
 </div>
+-->
 
 </mat-sidenav-content>        
 </mat-sidenav-container>

@@ -1,149 +1,96 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
 import { HnidZoneEditDialogComponent, ZEUPD_NAME, ZEUPD_SPW, ZEUPD_SWLST, ZEUPD_DESC, ZEUPD_MAXCT, ZEUPD_MINCT } from '../hnid-zone-edit-dialog/hnid-zone-edit-dialog.component';
 import { HnidConfirmDialogComponent } from '../hnid-confirm-dialog/hnid-confirm-dialog.component';
 import { IrrigationDataService, NamedObj, Zone } from '../_services/irrigation-data.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-hnid-zones',
   templateUrl: './hnid-zones.component.html',
-  styleUrls: ['./hnid-zones.component.scss']
+  styleUrls: ['./hnid-zones.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class HnidZonesComponent implements OnInit {
   
   crc32ID : string | null;
   errMsg : string;
 
-  switches: NamedObj[] = [];
+  switchList: NamedObj[] = [];
+  zoneList: Zone[] = [];
 
-  zones: Zone[] = [];
-  selectedIndex: number = 0;
-  selected: string = "";
+  dataSource = new MatTableDataSource<Zone>( this.zoneList );
+  selection = new SelectionModel<Zone>( false, [] );
 
-  curZID: string = "";
-
-  nameFC: string = ""; 
-  descriptionFC: string = "";
-  secPerWeekFC: number = 0;
-  maxCycleTimeFC: number = 0;
-  minCycleTimeFC: number = 0;
-  swidListFC: string[] = [];
+  columnsToDisplay : string[] = ['select', 'nameCol', 'secPerWeekCol', 'minCycleTimeCol', 'maxCycleTimeCol'];
+  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+  expandedElement: Zone | null = null;
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
     this.crc32ID = null;
     this.errMsg = "";     
   }
 
+  refreshZoneConfig() : void {
+    this.selection.clear();
+    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    this.irrData.getZoneConfig( tmpID ).subscribe({
+      next: data => {
+        this.zoneList = data.zoneList;
+        this.dataSource.data = this.zoneList;
+        this.switchList = data.switchList;
+        console.log( this.zoneList );
+        console.log( this.switchList );          
+      },
+      error: err => {
+        this.zoneList = [];
+        this.dataSource.data = this.zoneList;
+        this.switchList = []; 
+        this.errMsg = JSON.parse(err.error).message;
+      }
+    });
+  }
+
   ngOnInit(): void {
     
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.crc32ID = params.get('crc32ID');
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-      this.irrData.getZoneConfig( tmpID ).subscribe({
-        next: data => {
-          this.zones = data.zoneList;
-          this.switches = data.switchList;
-          this.setSelectedZoneByIndex( 0 );
-          console.log( this.zones );
-          console.log( this.switches );          
-        },
-        error: err => {
-          this.zones = [];
-          this.switches = []; 
-          this.errMsg = JSON.parse(err.error).message;
-        }
-      });
+      this.refreshZoneConfig();
     });
 
   }
 
-  setFormFields( zone: Zone ): void
+  formatDurationStr( seconds : number ) : string
   {
-
-    this.nameFC = zone.name;
-    this.descriptionFC = zone.description;
-    this.secPerWeekFC = zone.secondsPerWeek;
-    this.maxCycleTimeFC = zone.secondsMaxCycle;
-    this.minCycleTimeFC = zone.secondsMinCycle;
-    this.swidListFC = zone.swidList;
-
-    this.curZID = zone.zoneid;
+    var date = new Date(0);
+    date.setSeconds( seconds );
+    let rtnStr : string = date.toISOString().substring(11, 19);
+    
+    rtnStr += " (" + seconds + " seconds)";
+    return rtnStr;
   }
 
-  setSelectedZoneByIndex( index: number ): void
-  {
-      this.selectedIndex = index;
-      this.selected = this.zones[index].zoneid;
-
-      this.setFormFields( this.zones[index] );
-  }
-
-  setSelectedZoneByID( id: string ): void
-  {
-    if( this.zones.length == 0 )
-    return;
-
-    let index = 0;
-    for( index = 0; index < this.zones.length; index++ )
+  getSwitchName(swid : string) : string {
+    for( let i = 0; i < this.switchList.length; i++ )
     {
-      console.log( index );
-      console.log( "zoneid: " + this.zones[ index ].zoneid );
-      console.log( "id: " + id );
-      if( this.zones[ index ].zoneid == id )
+      if( this.switchList[i].id == swid )
       {
-          console.log( "Found zone" );
-          this.setSelectedZoneByIndex( index );
-          return;
+        let rtnStr : string = this.switchList[i].name;
+        rtnStr += " : " + swid;
+        return rtnStr;
       }
     }
 
-    this.setSelectedZoneByIndex(0);
-  }
-
-  nextSelectedZone(): void
-  {
-    if( this.zones.length == 0 )
-      return;
-
-    let index = this.selectedIndex;
-    index += 1;
-    if( index >= this.zones.length )
-      index = 0;
-    
-    this.setSelectedZoneByIndex( index );
-  }
-
-  prevSelectedZone(): void
-  {
-    if( this.zones.length == 0 )
-      return;
-
-    let index = this.selectedIndex;
-    if( index == 0 )
-      index = (this.zones.length - 1);
-    else
-      index -= 1;
-    
-    this.setSelectedZoneByIndex( index );
-  }
-
-  onZoneSelectChange(): void
-  {
-      console.log( "Zone Selection Change: " + this.selected  );
-      this.setSelectedZoneByID( this.selected );
-  }
-  
-  onNextButtonClick(): void
-  {
-      console.log( "Next Button Click" );
-      this.nextSelectedZone();
-  }
-
-  onPrevButtonClick(): void
-  {
-    console.log( "Prev Button Click" );
-    this.prevSelectedZone();
+    return "Unnamed : " + swid;
   }
 
   onEditButtonClick(): void
@@ -152,15 +99,23 @@ export class HnidZonesComponent implements OnInit {
 
     dialogCfg.autoFocus = true;
 
+    console.log(this.selection);
+    
+    if( this.selection.selected.length != 1 )
+      return;
+
+    let curZone : Zone = this.selection.selected[0];
+
     dialogCfg.data = {
       description: 'Edit Zone',
-      nameFC: this.nameFC,
-      descriptionFC: this.descriptionFC,
-      secPerWeekFC: this.secPerWeekFC,
-      maxCycleTimeFC: this.maxCycleTimeFC,
-      minCycleTimeFC: this.minCycleTimeFC,
-      swidListFC: this.swidListFC,
-      availSWList: this.switches
+      curZone: curZone,
+      nameFC: curZone.name,
+      descriptionFC: curZone.description,
+      secPerWeekFC: curZone.secondsPerWeek,
+      maxCycleTimeFC: curZone.secondsMaxCycle,
+      minCycleTimeFC: curZone.secondsMinCycle,
+      swidListFC: curZone.swidList,
+      availSWList: this.switchList
     };
 
     const dialogRef = this.dialog.open( HnidZoneEditDialogComponent, dialogCfg );
@@ -169,7 +124,7 @@ export class HnidZonesComponent implements OnInit {
       data => {
         if( data )
         {
-          var updateFields: Record<string,any> = {zoneID: this.curZID};
+          var updateFields: Record<string,any> = {zoneID: curZone.zoneid};
           console.log("Dialog output:", data);
           
           if( data.updFlags & ZEUPD_NAME )
@@ -188,21 +143,8 @@ export class HnidZonesComponent implements OnInit {
           console.log( updateFields );
 
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-          this.irrData.putUpdateZone( tmpID, this.curZID, updateFields ).subscribe(()=>{
-            this.irrData.getZoneConfig( tmpID ).subscribe({
-              next: data => {
-                this.zones = data.zoneList;
-                this.switches = data.switchList;
-                this.setSelectedZoneByIndex( 0 );
-                console.log( this.zones );
-                console.log( this.switches );          
-              },
-              error: err => {
-                this.zones = [];
-                this.switches = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+          this.irrData.putUpdateZone( tmpID, curZone.zoneid, updateFields ).subscribe(()=>{
+            this.refreshZoneConfig();
           });
 
         }
@@ -210,7 +152,7 @@ export class HnidZonesComponent implements OnInit {
           console.log("dialog Canceled");
         }
     );
-    
+  
   }
 
   onNewButtonClick(): void
@@ -219,8 +161,12 @@ export class HnidZonesComponent implements OnInit {
 
     dialogCfg.autoFocus = true;
 
+    let nullZone : Zone = {zoneid: "", name: "", description: "", secondsPerWeek: 0, secondsMinCycle: 0, secondsMaxCycle: 0, swidList: []};
+
     dialogCfg.data = {
-      description: 'Create Zone'
+      description: 'Create Zone',
+      curZone: nullZone,
+      availSWList: this.switchList
     };
 
     const dialogRef = this.dialog.open( HnidZoneEditDialogComponent, dialogCfg );
@@ -249,27 +195,13 @@ export class HnidZonesComponent implements OnInit {
 
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
           this.irrData.postCreateZone( tmpID, updateFields ).subscribe(()=>{
-            this.irrData.getZoneConfig( tmpID ).subscribe({
-              next: data => {
-                this.zones = data.zoneList;
-                this.switches = data.switchList;
-                this.setSelectedZoneByIndex( 0 );
-                console.log( this.zones );
-                console.log( this.switches );          
-              },
-              error: err => {
-                this.zones = [];
-                this.switches = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+            this.refreshZoneConfig();
           });
         }
         else
           console.log("dialog Canceled");
-        }
+      }
     );
-
   }
 
   onDeleteButtonClick(): void
@@ -278,8 +210,15 @@ export class HnidZonesComponent implements OnInit {
 
     dialogCfg.autoFocus = true;
 
+    console.log(this.selection);
+    
+    if( this.selection.selected.length != 1 )
+      return;
+
+    let curZone : Zone = this.selection.selected[0];
+
     dialogCfg.data = {
-      prompt: 'Delete zone - ' + this.nameFC
+      prompt: 'Delete zone - ' + curZone.name
     };
 
     const dialogRef = this.dialog.open( HnidConfirmDialogComponent, dialogCfg );
@@ -290,27 +229,15 @@ export class HnidZonesComponent implements OnInit {
         {
           console.log("Delete confirmed");
           const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-          this.irrData.deleteZone( tmpID, this.curZID ).subscribe(()=>{
-            this.irrData.getZoneConfig( tmpID ).subscribe({
-              next: data => {
-                this.zones = data.zoneList;
-                this.switches = data.switchList;
-                this.setSelectedZoneByIndex( 0 );
-                console.log( this.zones );
-                console.log( this.switches );          
-              },
-              error: err => {
-                this.zones = [];
-                this.switches = []; 
-                this.errMsg = JSON.parse(err.error).message;
-              }
-            });
+          this.irrData.deleteZone( tmpID, curZone.zoneid ).subscribe(()=>{
+              this.refreshZoneConfig();
           });
         }
         else
           console.log("dialog Canceled");
         }
-    );    
+    );
   }
+
 }
 
