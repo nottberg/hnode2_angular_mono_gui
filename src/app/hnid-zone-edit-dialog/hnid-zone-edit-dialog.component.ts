@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Zone, NMObjSelectionTracker } from '../_services/irrigation-data.service';
 
 // Bitfield values for tracking updates
 export const ZEUPD_NONE  = 0;  // 0b00000000
@@ -10,13 +11,6 @@ export const ZEUPD_SPW   = 4;  // 0b00000100
 export const ZEUPD_MAXCT = 8;  // 0b00001000
 export const ZEUPD_MINCT = 16; // 0b00010000
 export const ZEUPD_SWLST = 32; // 0b00100000
-
-export interface SWSelect {
-    swid: string;
-    name: string;
-    description: string;
-    selected: boolean;
-}
 
 @Component({
   selector: 'app-hnid-zone-edit-dialog',
@@ -28,13 +22,9 @@ export class HnidZoneEditDialogComponent implements OnInit {
   form!: FormGroup;
   description: string;
 
-  nameFC: string;
-  descriptionFC: string;
-  secPerWeekFC: string;
-  maxCycleTimeFC: string;
-  minCycleTimeFC: string;
+  curZone: Zone;
 
-  swList: SWSelect[];
+  swList: NMObjSelectionTracker[];
 
   updateFlags: number;
 
@@ -45,46 +35,35 @@ export class HnidZoneEditDialogComponent implements OnInit {
 
     this.swList = [];
     this.description = data.description;
+    this.curZone = data.curZone;
     this.updateFlags = ZEUPD_NONE;
-    this.nameFC = "";
-    this.descriptionFC = "";
-    this.secPerWeekFC = "";
-    this.maxCycleTimeFC = "";
-    this.minCycleTimeFC = "";
 
-    if( 'nameFC' in data )
-      this.nameFC = data.nameFC;
-    if( 'descriptionFC' in data )
-      this.descriptionFC = data.descriptionFC;
-    if( 'secPerWeekFC' in data )
-      this.secPerWeekFC = data.secPerWeekFC;
-    if( 'maxCycleTimeFC' in data )
-      this.maxCycleTimeFC = data.maxCycleTimeFC;
-    if( 'minCycleTimeFC' in data )
-      this.minCycleTimeFC = data.minCycleTimeFC;
+    if('availSWList' in data) {
+      console.log("Avail SW List");
+      console.log( data.availSWList );
 
-    if( ('swidListFC' in data) && ('availSWList' in data) )
-    {
       for( let i = 0; i < data.availSWList.length; i++ )
       {
-          let swex : SWSelect = { swid: "", name: "", description: "", selected: false };
+        let curSW = data.availSWList[i];
+        let swex : NMObjSelectionTracker = { id: curSW.id, name: curSW.name, selected: false };
+        this.swList.push( swex );
+      }      
+    }
 
-          console.log( data.availSWList[i] );
+    if( this.curZone )
+    {
+      for( let i = 0; i < this.curZone.swidList.length; i++ )
+      {
+        let swid = this.curZone.swidList[i];
 
-          swex.swid = data.availSWList[i].id;
-          swex.name = data.availSWList[i].name;
-
-          for( let j = 0; j < data.swidListFC.length; j++ )
+        for( let j = 0; j < this.swList.length; j++ )
+        {
+          if( swid == this.swList[j].id )
           {
-            if( swex.swid == data.swidListFC[j] )
-            {
-              swex.selected = true;
-              break;
-            }
+            this.swList[j].selected = true;
+            break;
           }
-
-          this.swList.push( swex );
-
+        }
       }
     }
   }
@@ -92,11 +71,11 @@ export class HnidZoneEditDialogComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
         description: [this.description, []],
-        nameFC: [this.nameFC, []],
-        descriptionFC: [this.descriptionFC, []],
-        secPerWeekFC: [this.secPerWeekFC, []],
-        maxCycleTimeFC: [this.maxCycleTimeFC, []],
-        minCycleTimeFC: [this.minCycleTimeFC, []]
+        nameFC: [this.curZone.name, []],
+        descriptionFC: [this.curZone.description, []],
+        secPerWeekFC: [this.curZone.secondsPerWeek, []],
+        maxCycleTimeFC: [this.curZone.secondsMaxCycle, []],
+        minCycleTimeFC: [this.curZone.secondsMinCycle, []]
       });
   }
 
@@ -105,7 +84,7 @@ export class HnidZoneEditDialogComponent implements OnInit {
     for( let i = 0; i < this.swList.length; i++ )
     {
       if( this.swList[i].selected == true )
-          swArrVal.push( this.swList[i].swid );
+          swArrVal.push( this.swList[i].id );
     }
 
     console.log( swArrVal );
@@ -144,7 +123,7 @@ export class HnidZoneEditDialogComponent implements OnInit {
 
     for( let i = 0; i < this.swList.length; i++ )
     {
-      if( this.swList[i].swid == id )
+      if( this.swList[i].id == id )
       {
         console.log("Set " + id + " to " + state);
         this.swList[i].selected = state;

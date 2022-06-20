@@ -30,8 +30,8 @@
     <section class="switch-list-section">
         Select zone switches:
         <ul *ngFor="let switch of swList">
-            <li><mat-checkbox id="{{switch.swid}}" [checked]="switch.selected" (change)="onSwitchChange($event)">
-            {{switch.swid}} - {{switch.name}}
+            <li><mat-checkbox id="{{switch.id}}" [checked]="switch.selected" (change)="onSwitchChange($event)">
+                {{switch.name}} : {{switch.id}}
             </mat-checkbox></li>
         </ul>
     </section>

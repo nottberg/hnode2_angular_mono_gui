@@ -109,12 +109,6 @@ export class HnidZonesComponent implements OnInit {
     dialogCfg.data = {
       description: 'Edit Zone',
       curZone: curZone,
-      nameFC: curZone.name,
-      descriptionFC: curZone.description,
-      secPerWeekFC: curZone.secondsPerWeek,
-      maxCycleTimeFC: curZone.secondsMaxCycle,
-      minCycleTimeFC: curZone.secondsMinCycle,
-      swidListFC: curZone.swidList,
       availSWList: this.switchList
     };
 
