@@ -34,20 +34,6 @@ export class HnidPlacementsComponent implements OnInit {
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   expandedElement: Placement | null = null;
 
-  //selectedIndex: number = 0;
-  //selected: string = "";
-
-  //curPID: string = "";
-
-  //nameFC: string = "";
-  //descriptionFC: string = "";
-  //startTimeFC: string = "";
-  //endTimeFC: string = "";
-  //rankFC: number = 0;
-
-  //dayListFC: string[] = [];
-  //zoneListFC: string[] = [];
-
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
     this.crc32ID = null;
     this.errMsg = "";     
@@ -61,7 +47,6 @@ export class HnidPlacementsComponent implements OnInit {
         this.placementsList = data.placementsList;
         this.znmList = data.znmList;
         this.dataSource.data = this.placementsList;
-        //this.setSelectedPlacementByIndex( 0 );
         console.log( this.placementsList );
         console.log( this.znmList );       
       },
@@ -94,106 +79,30 @@ export class HnidPlacementsComponent implements OnInit {
   }
 
   getDaysStr( dayArray: string[] ): string {
-      return "M W F";
-  }
+    let rtnStr = "";
 
-  /*
-  setFormFields( placement: Placement ): void
-  {
-    this.nameFC = placement.name;
-    this.descriptionFC = placement.description;
-    this.startTimeFC = placement.startTime;
-    this.endTimeFC = placement.endTime;
-    this.rankFC = placement.rank;
-
-    if( placement.dayList.length == 0 )
-      this.dayListFC = ["Daily"];
-    else
-      this.dayListFC = placement.dayList;
-
-    if( placement.zoneList.length == 0 )
-      this.zoneListFC = ["All Zones"];
-    else      
-      this.zoneListFC = placement.zoneList;
-
-    this.curPID = placement.placementid;
-  }
-
-  setSelectedPlacementByIndex( index: number ): void
-  {
-      this.selectedIndex = index;
-      this.selected = this.placementsList[index].placementid;
-
-      this.setFormFields( this.placementsList[index] );
-  }
-
-  setSelectedPlacementByID( id: string ): void
-  {
-    if( this.placementsList.length == 0 )
-    return;
-
-    let index = 0;
-    for( index = 0; index < this.placementsList.length; index++ )
+    for( let i = 0; i < dayArray.length; i++ )
     {
-      console.log( index );
-      console.log( "placementid: " + this.placementsList[ index ].placementid );
-      console.log( "id: " + id );
-      if( this.placementsList[ index ].placementid == id )
-      {
-          console.log( "Found placement" );
-          this.setSelectedPlacementByIndex( index );
-          return;
-      }
-    }
+      let dStr = dayArray[i];
 
-    this.setSelectedPlacementByIndex(0);
+      if( "Sunday" == dStr )
+        rtnStr += "Su ";
+      else if( "Monday" == dStr )
+        rtnStr += "M ";
+      else if( "Tuesday" == dStr )
+        rtnStr += "T ";
+      else if( "Wednesday" == dStr )
+        rtnStr += "W ";
+      else if( "Thursday" == dStr )
+        rtnStr += "Th ";
+      else if( "Friday" == dStr )
+        rtnStr += "F ";
+      else if( "Saturday" == dStr )
+        rtnStr += "Sa ";
+    } 
+
+    return rtnStr;
   }
-
-  nextSelectedPlacement(): void
-  {
-    if( this.placementsList.length == 0 )
-      return;
-
-    let index = this.selectedIndex;
-    index += 1;
-    if( index >= this.placementsList.length )
-      index = 0;
-    
-    this.setSelectedPlacementByIndex( index );
-  }
-
-  prevSelectedPlacement(): void
-  {
-    if( this.placementsList.length == 0 )
-      return;
-
-    let index = this.selectedIndex;
-    if( index == 0 )
-      index = (this.placementsList.length - 1);
-    else
-      index -= 1;
-    
-    this.setSelectedPlacementByIndex( index );
-  }
-
-  onPlacementSelectChange(): void
-  {
-      console.log( "Zone Selection Change: " + this.selected  );
-      this.setSelectedPlacementByID( this.selected );
-  }
- 
-  onNextButtonClick(): void
-  {
-      console.log( "Next Button Click" );
-      this.nextSelectedPlacement();
-  }
-
-  onPrevButtonClick(): void
-  {
-    console.log( "Prev Button Click" );
-    this.prevSelectedPlacement();
-  }
-  */
 
   onEditButtonClick(): void
   {
@@ -210,13 +119,7 @@ export class HnidPlacementsComponent implements OnInit {
 
     dialogCfg.data = {
       description: 'Edit Schedule Placement',
-      nameFC: curPlat.name,
-      descriptionFC: curPlat.description,
-      rankFC: curPlat.rank,
-      startTimeFC: curPlat.startTime,      
-      endTimeFC: curPlat.endTime,
-      dayArr: curPlat.dayList,
-      zoneArr: curPlat.zoneList,
+      curPlat: curPlat,
       zoneAvail: this.znmList
     };
 
@@ -266,6 +169,7 @@ export class HnidPlacementsComponent implements OnInit {
 
     dialogCfg.data = {
       description: 'Create Schedule Placement',
+      curPlat: null,
       zoneAvail: this.znmList
     };
 

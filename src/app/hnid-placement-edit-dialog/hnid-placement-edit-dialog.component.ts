@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { NMObjSelectionTracker } from '../_services/irrigation-data.service';
+import { Placement, NMObjSelectionTracker } from '../_services/irrigation-data.service';
 
 // Bitfield values for tracking updates
 export const PEUPD_NONE    = 0;  // 0b00000000
@@ -23,14 +23,10 @@ export class HnidPlacementEditDialogComponent implements OnInit {
   form!: FormGroup;
   description: string;
 
+  curPlat: Placement;
+
   dayList : NMObjSelectionTracker[];
   zoneList : NMObjSelectionTracker[];
-
-  nameFC: string = "";
-  descriptionFC: string = "";
-  rankFC: number = 0;
-  startTimeFC: string = "";
-  endTimeFC: string = "";
 
   updateFlags: number;
 
@@ -41,6 +37,11 @@ export class HnidPlacementEditDialogComponent implements OnInit {
 
     this.description = data.description;
     this.updateFlags = PEUPD_NONE;
+
+    if( data.curPlat )
+      this.curPlat = data.curPlat;
+    else
+      this.curPlat = {placementid: "", name: "", description: "", startTime: "", endTime: "", rank: 0, dayList: [], zoneList: [] };
 
     this.dayList = [
       {id: "all", name: "Daily", selected: false,},
@@ -53,61 +54,55 @@ export class HnidPlacementEditDialogComponent implements OnInit {
       {id: "sat", name: "Saturday", selected: false,}
     ];
 
-    if( data.dayArr.length == 0 )
-      this.dayList[0].selected = true;   
-    else
-    {
-      for( let i = 0; i < data.dayArr.length; i++ )
-        for( let j = 1; j < this.dayList.length; j++ )
-          if( data.dayArr[i] == this.dayList[j].name )
-            this.dayList[j].selected = true;
+    if( this.curPlat ) {
+      if( this.curPlat.dayList.length == 0 )
+        this.dayList[0].selected = true;   
+      else
+      {
+        for( let i = 0; i < this.curPlat.dayList.length; i++ )
+          for( let j = 1; j < this.dayList.length; j++ )
+            if( this.curPlat.dayList[i] == this.dayList[j].name )
+              this.dayList[j].selected = true;
+      }
     }
 
     this.zoneList = [
       {id: "allzones", name: "All Zones", selected: false},
     ];
 
+    for( let i = 0; i < data.zoneAvail.length; i++ )
+    {
+      const zlvObj : NMObjSelectionTracker = {id: data.zoneAvail[i].id, name: data.zoneAvail[i].name, selected: false};
+      this.zoneList.push(zlvObj);
+    }
+
     console.log(data);
   
-    if( data.zoneArr.length == 0 )
-      this.zoneList[0].selected = true;   
-    else
+    if( this.curPlat )
     {
-      for( let i = 0; i < data.zoneAvail.length; i++ )
+      if( this.curPlat.zoneList.length == 0 )
+        this.zoneList[0].selected = true;   
+      else
       {
-        const zlvObj : NMObjSelectionTracker = {id: data.zoneAvail[i].id, name: data.zoneAvail[i].name, selected: false};
-        this.zoneList.push(zlvObj);
+        for( let i = 0; i < this.curPlat.zoneList.length; i++ )
+          for( let j = 1; j < this.zoneList.length; j++ )
+            if( this.curPlat.zoneList[i] == this.zoneList[j].id )
+              this.zoneList[j].selected = true;
       }
-
-      for( let i = 0; i < data.zoneArr.length; i++ )
-        for( let j = 1; j < this.zoneList.length; j++ )
-          if( data.zoneArr[i] == this.zoneList[j].id )
-            this.zoneList[j].selected = true;
     }
-  
-    console.log(this.zoneList);
 
-    if( 'nameFC' in data )
-      this.nameFC = data.nameFC;
-    if( 'descriptionFC' in data )
-      this.descriptionFC = data.descriptionFC;
-    if( 'rankFC' in data )
-      this.rankFC = data.rankFC;      
-    if( 'startTimeFC' in data )
-      this.startTimeFC = data.startTimeFC;      
-    if( 'endTimeFC' in data )
-      this.endTimeFC = data.endTimeFC;      
+    console.log(this.zoneList);
 
   }
 
   ngOnInit(): void {
     this.form = this.fb.group({
       description: [this.description, []],
-      nameFC: [this.nameFC, []],
-      descriptionFC: [this.descriptionFC, []],      
-      rankFC: [this.rankFC, []],
-      startTimeFC: [this.startTimeFC, []],
-      endTimeFC: [this.endTimeFC, []]
+      nameFC: [this.curPlat.name, []],
+      descriptionFC: [this.curPlat.description, []],      
+      rankFC: [this.curPlat.rank, []],
+      startTimeFC: [this.curPlat.startTime, []],
+      endTimeFC: [this.curPlat.endTime, []]
     });
   }
 
