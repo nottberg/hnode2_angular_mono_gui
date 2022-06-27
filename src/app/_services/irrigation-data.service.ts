@@ -39,6 +39,16 @@ export interface HNIrrModifier {
   modifierid: string;
 };
 
+export interface HNIrrSequence {
+  name: string;
+  description: string;
+  type: string;
+  onDuration: number;
+  offDuration: number;
+  objIDList: string[];
+  sequenceid: string;
+};
+
 export interface NamedObj {
   id: string;
   name: string;
@@ -87,6 +97,21 @@ export interface Modifier {
 
 export interface ModifiersConfig {
   modifiersList: Modifier[];
+  znmList: NamedObj[];
+};
+
+export interface Sequence {
+  name: string;
+  description: string;
+  type: string;
+  onDuration: number;
+  offDuration: number;
+  objIDList: string[];
+  sequenceid: string;
+};
+
+export interface SequenceConfig {
+  sequencesList: Sequence[];
   znmList: NamedObj[];
 };
 
@@ -187,6 +212,7 @@ export class IrrigationDataService {
   private zonesURL = 'hnode2/irrigation/zones';
   private placementsURL = 'hnode2/irrigation/placement';
   private modifiersURL = 'hnode2/irrigation/modifier';
+  private sequencesURL = 'hnode2/irrigation/sequence';  
   private schURL = 'hnode2/irrigation/schedule';
   private statusURL = 'hnode2/irrigation/status';
 
@@ -470,4 +496,70 @@ export class IrrigationDataService {
     const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.modifiersURL, mid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
+
+  getSequencesList( crc32ID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.placementsURL );
+    const rObs = this.http.get<HNIrrSequence[]>( reqURL );
+        
+    return rObs.pipe(
+      map<HNIrrSequence[], Sequence[]>(irrSequence => {
+        let sequencesList : Sequence[] = [];
+        irrSequence.forEach( irrSeq => {
+          let sequence : Sequence = {
+            name: irrSeq.name,
+            description: irrSeq.description,
+            type: irrSeq.type,
+            onDuration: irrSeq.onDuration,
+            offDuration: irrSeq.offDuration,
+            objIDList: irrSeq.objIDList,
+            sequenceid: irrSeq.sequenceid
+          }
+          sequencesList.push( sequence );
+        });
+        return sequencesList;
+      }))
+
+  }
+
+  getSequencesConfig( crc32ID: string ) : Observable<SequenceConfig> {
+    const sequencesObs$ = this.getSequencesList( crc32ID );
+    const znmObs$ = this.getZoneNameList( crc32ID );
+
+    const combo$ = combineLatest([sequencesObs$, znmObs$]);
+
+    const cbObs$ = combo$.pipe(
+      map(([sequencesList, znmList]) => {
+        console.log(sequencesList);
+        console.log(znmList);
+
+        const nullSequence : Sequence[] = [];
+        const nullZNMList : NamedObj[] = [];
+        const sequenceCD : SequenceConfig = {sequencesList: nullSequence, znmList: nullZNMList};
+
+        sequenceCD.sequencesList = sequencesList;
+        sequenceCD.znmList = znmList;
+        console.log(sequenceCD);
+
+        return sequenceCD;
+      })
+    );
+
+    return cbObs$;
+  }
+
+  putUpdateSequence( crc32ID: string, pid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.sequencesURL, pid );
+    return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
+  }
+
+  postCreateSequence( crc32ID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.sequencesURL );
+    return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
+  }
+
+  deleteSequence( crc32ID: string, pid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.sequencesURL, pid );
+    return this.http.delete( reqURL, { observe: 'response' } );
+  }
+
 }
