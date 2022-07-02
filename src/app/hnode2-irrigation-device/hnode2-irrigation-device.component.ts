@@ -19,21 +19,30 @@ export class Hnode2IrrigationDeviceComponent implements OnInit {
     this.errMsg = "";
   }
   
+  refreshStatusConfig() : void {
+    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    this.irrData.getStatus( tmpID ).subscribe({
+      next: data => {
+        this.status = data;
+      },
+      error: err => {
+        this.status = null; 
+        this.errMsg = JSON.parse(err.error).message;
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.crc32ID = params.get('crc32ID')
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-      this.irrData.getStatus( tmpID ).subscribe({
-        next: data => {
-          this.status = data;
-        },
-        error: err => {
-          this.status = null; 
-          this.errMsg = JSON.parse(err.error).message;
-        }
-      });
-    })
-    
-  
+      this.refreshStatusConfig();
+    });
   }
+
+  changeSchedulerState(value : string) : void {
+      console.log("schState change: " + value);
+      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+      this.irrData.postScheduleEnableOperation(tmpID, ((value == "enabled") ? true : false ));
+  }
+
 }

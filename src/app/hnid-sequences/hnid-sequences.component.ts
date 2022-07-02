@@ -30,7 +30,7 @@ export class HnidSequencesComponent implements OnInit {
   dataSource = new MatTableDataSource<Sequence>( this.sequencesList );
   selection = new SelectionModel<Sequence>( false, [] );
 
-  columnsToDisplay : string[] = ['select', 'nameCol', 'type', 'onDuration', 'offDuration'];
+  columnsToDisplay : string[] = ['select', 'nameCol', 'typeCol', 'onDurationCol', 'offDurationCol'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
   expandedElement: Sequence | null = null;
 
@@ -111,7 +111,7 @@ export class HnidSequencesComponent implements OnInit {
           if( data.updFlags & SQUPD_DESC )
             updateFields['description'] = data.form.descriptionFC;
           if( data.updFlags & SQUPD_TYPE )
-            updateFields['type'] = data.form.typeFC;
+            updateFields['type'] = data.type;
           if( data.updFlags & SQUPD_ONDURATION )
             updateFields['onDuration'] = data.form.onDurationFC;
           if( data.updFlags & SQUPD_OFFDURATION )
@@ -159,7 +159,7 @@ export class HnidSequencesComponent implements OnInit {
           if( data.updFlags & SQUPD_DESC )
             updateFields['description'] = data.form.descriptionFC;
           if( data.updFlags & SQUPD_TYPE )
-            updateFields['type'] = data.form.typeFC;
+            updateFields['type'] = data.type;
           if( data.updFlags & SQUPD_ONDURATION )
             updateFields['onDuration'] = data.form.onDurationFC;
           if( data.updFlags & SQUPD_OFFDURATION )

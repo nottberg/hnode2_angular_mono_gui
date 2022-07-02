@@ -22,16 +22,27 @@
         <input matInput placeholder="00:00:00" formControlName="offDurationFC" (input)="onFieldUpdate('offDurationFC')"/>
     </mat-form-field>
     <br/>
-    <!--
-    <section class="zones-list-section">
-        Select criteria zones:
-        <ul *ngFor="let zone of zoneList">
-            <li><mat-checkbox id="{{zone.id}}" [checked]="zone.selected" (change)="onZoneChange($event)">
-                {{zone.name}}
-            </mat-checkbox></li>
-        </ul>
-    </section>
-    -->
+    <br/>
+    <h3>Sequence Type</h3>
+    <mat-select [(value)]="this.curSeq.type" (input)="onFieldUpdate('typeFC')">
+        <mat-option value="uniform">Uniform</mat-option>
+    </mat-select>    
+    <div class="example-container">
+        <h3>Sequence Entries</h3>
+        <p>Drag entries to reorder sequence.</p>
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let objID of curSeq.objIDList" cdkDrag>{{getObjectName(objID)}}</div>
+        </div>
+        <div>
+          <p>Add and remove sequence entries.</p>
+          <mat-select [(value)]="this.selectedObjID">
+            <mat-option *ngFor="let zone of availZones" value="{{zone.id}}">{{zone.name}}</mat-option>
+          </mat-select>
+          <button class="mat-icon-button" (click)="addObjID()"><mat-icon>add</mat-icon></button>
+          <button class="mat-icon-button" (click)="removeObjID()"><mat-icon>remove</mat-icon></button>
+        </div>
+    </div>
+      
 </mat-dialog-content>
 
 <mat-dialog-actions>

@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggle, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,7 +25,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -43,6 +46,7 @@ import { HnidModifiersComponent } from './hnid-modifiers/hnid-modifiers.componen
 import { HnidModifiersEditDialogComponent } from './hnid-modifiers-edit-dialog/hnid-modifiers-edit-dialog.component';
 import { HnidSequencesComponent } from './hnid-sequences/hnid-sequences.component';
 import { HnidSequenceEditDialogComponent } from './hnid-sequence-edit-dialog/hnid-sequence-edit-dialog.component';
+import { HnidControlsComponent } from './hnid-controls/hnid-controls.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +67,8 @@ import { HnidSequenceEditDialogComponent } from './hnid-sequence-edit-dialog/hni
     HnidModifiersComponent,
     HnidModifiersEditDialogComponent,
     HnidSequencesComponent,
-    HnidSequenceEditDialogComponent
+    HnidSequenceEditDialogComponent,
+    HnidControlsComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +79,7 @@ import { HnidSequenceEditDialogComponent } from './hnid-sequence-edit-dialog/hni
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatProgressBarModule,
     MatTableModule,
@@ -88,8 +94,10 @@ import { HnidSequenceEditDialogComponent } from './hnid-sequence-edit-dialog/hni
     MatSidenavModule,
     MatListModule,
     MatGridListModule,
+    MatRadioModule,
     FormsModule,
-    ReactiveFormsModule    
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]

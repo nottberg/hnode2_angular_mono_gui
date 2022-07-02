@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 
@@ -43,10 +42,15 @@ export interface HNIrrSequence {
   name: string;
   description: string;
   type: string;
-  onDuration: number;
-  offDuration: number;
+  onDuration: string;
+  offDuration: string;
   objIDList: string[];
   sequenceid: string;
+};
+
+export interface HNIrrOperation {
+  type: string;
+  operationid: string;
 };
 
 export interface NamedObj {
@@ -104,8 +108,8 @@ export interface Sequence {
   name: string;
   description: string;
   type: string;
-  onDuration: number;
-  offDuration: number;
+  onDuration: string;
+  offDuration: string;
   objIDList: string[];
   sequenceid: string;
 };
@@ -113,6 +117,11 @@ export interface Sequence {
 export interface SequenceConfig {
   sequencesList: Sequence[];
   znmList: NamedObj[];
+};
+
+export interface Operation {
+  type: string;
+  operationid: string;
 };
 
 export interface HNIrrScheduleAction {
@@ -195,6 +204,21 @@ export interface Status {
   timezone: string;
 };
 
+export interface HNIrrSchedulerState {
+  state: string;
+  inhibitDuration: string;
+};
+
+export interface SchedulerState {
+  state: string;
+  inhibitDuration: string;
+};
+
+export interface ControlsConfig {
+  zoneList: Zone[];
+  sequenceList: Sequence[];
+};
+
 export interface NMObjSelectionTracker {
   id: string;
   name: string;
@@ -215,6 +239,8 @@ export class IrrigationDataService {
   private sequencesURL = 'hnode2/irrigation/sequence';  
   private schURL = 'hnode2/irrigation/schedule';
   private statusURL = 'hnode2/irrigation/status';
+  private schedulerStateURL = 'hnode2/irrigation/schedule/state';
+  private operationsURL = 'hnode2/irrigation/operations';
 
   constructor( private http: HttpClient ) { }
 
@@ -231,7 +257,7 @@ export class IrrigationDataService {
   createReqURLWithID( rootURL : string, crc32ID : string, reqURL : string, objID : string ) : string {
     const resultURL = rootURL + "/" + crc32ID + "/" + reqURL + "/" + objID;
     return resultURL;
-}
+  }
 
   getStatus( crc32ID : string ) : Observable<Status> {
     const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.statusURL );
@@ -498,7 +524,7 @@ export class IrrigationDataService {
   }
 
   getSequencesList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.placementsURL );
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.sequencesURL );
     const rObs = this.http.get<HNIrrSequence[]>( reqURL );
         
     return rObs.pipe(
@@ -562,4 +588,92 @@ export class IrrigationDataService {
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
+  getSchedulerEnabledState( crc32ID : string ) : Observable<SchedulerState> {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.schedulerStateURL );
+
+    return this.http.get<SchedulerState>( reqURL )
+      .pipe(
+        map<HNIrrSchedulerState, SchedulerState>(irrState => {
+          let rtnState : SchedulerState = {
+            state: irrState.state,
+            inhibitDuration: irrState.inhibitDuration
+          }
+          return rtnState;
+        }))
+  } 
+
+  getOperationsList( crc32ID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.operationsURL );
+    const rObs = this.http.get<HNIrrOperation[]>( reqURL );
+        
+    return rObs.pipe(
+      map<HNIrrOperation[], Operation[]>(irrOperation => {
+        let operationsList : Operation[] = [];
+        irrOperation.forEach( irrOp => {
+          let operation : Operation = {
+            type: irrOp.type,
+            operationid: irrOp.operationid
+          }
+          operationsList.push( operation );
+        });
+        return operationsList;
+      }))
+
+  }
+
+  postCreateOperation( crc32ID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.operationsURL );
+    return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
+  }
+
+  postScheduleEnableOperation( crc32ID : string, enabled : boolean ) {
+
+    const opFields : Record< string, any> = {
+      "type":"scheduler_state",
+      "schedulerState": ((enabled == true) ? "enabled" : "disabled")
+    };
+
+    return this.postCreateOperation( crc32ID, opFields );
+  }
+
+  postExecSequenceOperation( crc32ID : string, sequenceID : string ) {
+
+    const opFields : Record< string, any> = {
+      "type":"scheduler_state",
+      "objIDList":[sequenceID] 
+    };
+
+    return this.postCreateOperation( crc32ID, opFields );
+  }
+
+  cancelOperation( crc32ID: string, oid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.operationsURL, oid );
+    return this.http.delete( reqURL, { observe: 'response' } );
+  }
+
+  getControlsConfig( crc32ID : string ) : Observable<ControlsConfig> {
+    const zoneObs$ = this.getZonesList( crc32ID );
+    const seqObs$ = this.getSequencesList( crc32ID );
+
+    const combo$ = combineLatest([zoneObs$, seqObs$]);
+
+    const cbObs$ = combo$.pipe(
+      map(([zones, sequences]) => {
+        console.log(zones);
+        console.log(sequences);
+
+        const nullZones : Zone[] = [];
+        const nullSequences : Sequence[] = [];
+        const controlsCD : ControlsConfig = {zoneList: nullZones, sequenceList: nullSequences};
+
+        controlsCD.zoneList = zones;
+        controlsCD.sequenceList = sequences;
+        console.log(controlsCD);
+
+        return controlsCD;
+      })
+    );
+
+    return cbObs$;
+  }
 }

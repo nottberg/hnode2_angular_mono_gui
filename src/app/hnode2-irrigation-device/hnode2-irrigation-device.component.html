@@ -36,6 +36,14 @@ timezone: string;
                 <mat-icon>exposure</mat-icon>
                 Modifiers
             </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/sequences">
+                <mat-icon>playlist_play</mat-icon>
+                Sequences
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/inhibits">
+                <mat-icon>block</mat-icon>
+                Inhibits
+            </a>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
@@ -45,6 +53,10 @@ timezone: string;
                 <p><strong>Time: </strong>{{status.time}}</p>
                 <p><strong>Time Zone: </strong>{{status.timezone}}</p>
                 <p><strong>Scheduler State: </strong>{{status.schedulerState}}</p>
+                <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="status.schedulerState">
+                    <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
+                    <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
+                </mat-button-toggle-group>
                 <p><strong>Health: </strong>{{status.overallHealth.status}}  {{status.overallHealth.msg}}</p>
             </mat-card-content> 
         </mat-card>

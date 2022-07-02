@@ -25,6 +25,14 @@
                 <mat-icon>exposure</mat-icon>
                 Modifiers
             </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/sequences">
+              <mat-icon>playlist_play</mat-icon>
+              Sequences
+            </a>
+            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/inhibits">
+              <mat-icon>block</mat-icon>
+              Inhibits
+            </a>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

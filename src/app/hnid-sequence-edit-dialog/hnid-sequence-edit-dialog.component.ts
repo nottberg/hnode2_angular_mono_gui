@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Sequence, NMObjSelectionTracker } from '../_services/irrigation-data.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 // Bitfield values for tracking updates
 export const SQUPD_NONE        = 0;  // 0b00000000
@@ -22,10 +23,11 @@ export class HnidSequenceEditDialogComponent implements OnInit {
   description: string;
 
   curSeq: Sequence;
+  updateFlags: number;
 
   availZones : NMObjSelectionTracker[];
 
-  updateFlags: number;
+  selectedObjID : any;
 
   constructor(
     private fb: FormBuilder,
@@ -36,11 +38,18 @@ export class HnidSequenceEditDialogComponent implements OnInit {
     this.updateFlags = SQUPD_NONE;
 
     if( data.curSeq )
+    {
       this.curSeq = data.curSeq;
+    }
     else
-      this.curSeq = {sequenceid: "", name: "", description: "", type: "", onDuration: 0, offDuration: 0, objIDList: [] };
+      this.curSeq = {sequenceid: "", name: "", description: "", type: "uniform", onDuration: "", offDuration: "", objIDList: [] };
 
      this.availZones = data.availZones;
+    
+     if( this.availZones )
+     {
+      this.selectedObjID = this.availZones[0].id;
+     }
 
      console.log(data);
   }
@@ -55,24 +64,57 @@ export class HnidSequenceEditDialogComponent implements OnInit {
     });
   }
 
-  save() {
-  //  let rtnDayArr : string[] = [];
-  //  if( this.dayList[0].selected == false )
-  //  {
-  //    for( let i = 0; i < this.dayList.length; i++ )
-  //      if( this.dayList[i].selected == true )
-  //        rtnDayArr.push( this.dayList[i].name );
-  //  }
+  getObjectName( objid: string ) : string {
+    for( let i = 0; i < this.availZones.length; i++ )
+    {
+      if( this.availZones[i].id == objid )
+        return this.availZones[i].name;
+    }
 
+    return "Object ID Not Found (" + objid + ")";
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    this.updateFlags |= SQUPD_OBJIDLIST;
+    moveItemInArray(this.curSeq.objIDList, event.previousIndex, event.currentIndex);
+  }
+
+  addObjID() {
+    if( this.selectedObjID == null )
+      return;
+
+    this.updateFlags |= SQUPD_OBJIDLIST;
+    this.curSeq.objIDList.push( this.selectedObjID );  
+  }
+
+  removeObjID() {
+    if( this.selectedObjID == null )
+      return;
+
+    this.updateFlags |= SQUPD_OBJIDLIST;
+    do{
+      var index = this.curSeq.objIDList.indexOf( this.selectedObjID );
+      if (index !== -1) {
+        this.curSeq.objIDList.splice(index, 1);
+      }
+    }while( index !== -1 );
+  }
+
+  save() {
     const rtnData = { form: this.form.value,
+                      type: this.curSeq.type,
+                      objIDList: this.curSeq.objIDList,
                       updFlags: this.updateFlags
-                      //dayArr: rtnDayArr,
-                      };
+                    };
 
     this.dialogRef.close(rtnData);
   }
 
   close() {
+    console.log(this.form.value);
+    console.log(this.updateFlags);
+    console.log(this.curSeq.objIDList);
+
     this.dialogRef.close();
   }
 
