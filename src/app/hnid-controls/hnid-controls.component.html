@@ -48,19 +48,19 @@
                 <mat-list>
                     <mat-list-item>
                         <mat-card matLine *ngFor="let zone of zoneList">
-                            <mat-card-title>Zone: {{zone.zoneid}}</mat-card-title>
+                            <mat-card-title>Zone: {{zone.name}}</mat-card-title>
                             <mat-card-actions>
-                                <button mat-button id="activate-30-{{zone.zoneid}}" (click)="activateZone($event)">30 sec</button>
-                                <button mat-button id="activate-60-{{zone.zoneid}}" (click)="activateZone($event)">1 min</button>
-                                <button mat-button id="activate-300-{{zone.zoneid}}" (click)="activateZone($event)">5 min</button>
+                                <button mat-button id="activate-30s-{{zone.zoneid}}" (click)="activateZone($event)">30 sec</button>
+                                <button mat-button id="activate-1m-{{zone.zoneid}}" (click)="activateZone($event)">1 min</button>
+                                <button mat-button id="activate-5m-{{zone.zoneid}}" (click)="activateZone($event)">5 min</button>
                                 <button mat-button id="activate-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
                             </mat-card-actions>
                             <mat-card-actions>
-                                <button mat-button id="inhibit-12-{{zone.zoneid}}" (click)="activateZone($event)">12 hour</button>
-                                <button mat-button id="inhibit-24-{{zone.zoneid}}" (click)="activateZone($event)">24 hour</button>
-                                <button mat-button id="inhibit-36-{{zone.zoneid}}" (click)="activateZone($event)">36 hour</button>
+                                <button mat-button id="inhibit-12h-{{zone.zoneid}}" (click)="activateZone($event)">12 hour</button>
+                                <button mat-button id="inhibit-24h-{{zone.zoneid}}" (click)="activateZone($event)">24 hour</button>
+                                <button mat-button id="inhibit-36h-{{zone.zoneid}}" (click)="activateZone($event)">36 hour</button>
                                 <button mat-button id="inhibit-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
-                                <button mat-button id="inhibit-permanent-{{zone.zoneid}}" (click)="activateZone($event)">No Expiration</button>
+                                <button mat-button id="inhibit-noexpire-{{zone.zoneid}}" (click)="activateZone($event)">No Expiration</button>
                             </mat-card-actions>                            
                         </mat-card>
                     </mat-list-item>

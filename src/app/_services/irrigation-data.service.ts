@@ -651,6 +651,18 @@ export class IrrigationDataService {
     return this.postCreateOperation( crc32ID, opFields );
   }
 
+  postExecOneTimeSequenceOperation( crc32ID: string, onDuration: string, offDuration: string, objIDList: string[] ) {
+
+    const opFields : Record< string, any> = {
+      "type":"exec_onetimeseq",
+      "onDuration":onDuration,
+      "offDuration":offDuration,
+      "objIDList":objIDList 
+    };
+
+    return this.postCreateOperation( crc32ID, opFields );
+  }
+
   cancelOperation( crc32ID: string, oid: string ) {
     const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.operationsURL, oid );
     return this.http.delete( reqURL, { observe: 'response' } );
