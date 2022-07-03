@@ -37,31 +37,66 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <mat-tab-group>
-            <mat-tab label="Zone Control"> Content </mat-tab>
+            <mat-tab label="Device Settings">
+                <h3>Scheduler State</h3>
+                <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="schedulerState">
+                    <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
+                    <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-tab>
+            <mat-tab label="Zone Control">
+                <mat-list>
+                    <mat-list-item>
+                        <mat-card matLine *ngFor="let zone of zoneList">
+                            <mat-card-title>Zone: {{zone.zoneid}}</mat-card-title>
+                            <mat-card-actions>
+                                <button mat-button id="activate-30-{{zone.zoneid}}" (click)="activateZone($event)">30 sec</button>
+                                <button mat-button id="activate-60-{{zone.zoneid}}" (click)="activateZone($event)">1 min</button>
+                                <button mat-button id="activate-300-{{zone.zoneid}}" (click)="activateZone($event)">5 min</button>
+                                <button mat-button id="activate-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
+                            </mat-card-actions>
+                            <mat-card-actions>
+                                <button mat-button id="inhibit-12-{{zone.zoneid}}" (click)="activateZone($event)">12 hour</button>
+                                <button mat-button id="inhibit-24-{{zone.zoneid}}" (click)="activateZone($event)">24 hour</button>
+                                <button mat-button id="inhibit-36-{{zone.zoneid}}" (click)="activateZone($event)">36 hour</button>
+                                <button mat-button id="inhibit-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
+                                <button mat-button id="inhibit-permanent-{{zone.zoneid}}" (click)="activateZone($event)">No Expiration</button>
+                            </mat-card-actions>                            
+                        </mat-card>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+            <mat-tab label="Execute Sequence">
+                <h3>Select sequence to execute:</h3>
+                <mat-select [(value)]="this.selectedSequenceID">
+                    <mat-option *ngFor="let seq of sequenceList" value="{{seq.sequenceid}}">{{seq.name}}</mat-option>
+                </mat-select>
+                <button class="mat-raised-button" (click)="executeSequence()">Execute Sequence</button>      
+            </mat-tab>            
             <mat-tab label="One-Time Sequence">
                 <form>
                     <mat-form-field>
                         <mat-hint>On Duration (HH:MM:SS)</mat-hint>
-                        <input matInput placeholder="00:00:00"/>
+                        <input matInput name="oneTimeOnDuration" [(ngModel)]="onDuration"/>
                     </mat-form-field>           
                     <mat-form-field>
                         <mat-hint>Off Duration (HH:MM:SS)</mat-hint>
-                        <input matInput placeholder="00:00:00"/>
+                        <input matInput name="oneTimeOffDuration" [(ngModel)]="offDuration"/>
                     </mat-form-field>
                     <br/>  
                     <div class="example-container">
                         <h3>Sequence Entries</h3>
                         <p>Drag entries to reorder sequence.</p>
                         <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-                            <div class="example-box" *ngFor="let objID of objIDList" cdkDrag>{{getObjectName(objID)}}</div>
+                            <div class="example-box" *ngFor="let zoneID of oneTimeZoneIDList" cdkDrag>{{getZoneName(zoneID)}}</div>
                         </div>
                         <div>
                             <p>Add and remove sequence entries.</p>
-                            <mat-select [(value)]="this.selectedObjID">
-                                <mat-option *ngFor="let zone of availZones" value="{{zone.id}}">{{zone.name}}</mat-option>
+                            <mat-select [(value)]="this.selectedZoneID">
+                                <mat-option *ngFor="let zone of zoneList" value="{{zone.zoneid}}">{{zone.name}}</mat-option>
                             </mat-select>
-                            <button class="mat-icon-button" (click)="addObjID()"><mat-icon>add</mat-icon></button>
-                            <button class="mat-icon-button" (click)="removeObjID()"><mat-icon>remove</mat-icon></button>
+                            <button class="mat-icon-button" (click)="addZoneID()"><mat-icon>add</mat-icon></button>
+                            <button class="mat-icon-button" (click)="removeZoneID()"><mat-icon>remove</mat-icon></button>
                         </div>
                     </div>
                     <button class="mat-raised-button" (click)="executeOneTimeSequence()">Execute Sequence</button>

@@ -215,6 +215,7 @@ export interface SchedulerState {
 };
 
 export interface ControlsConfig {
+  status: Status;
   zoneList: Zone[];
   sequenceList: Sequence[];
 };
@@ -240,7 +241,7 @@ export class IrrigationDataService {
   private schURL = 'hnode2/irrigation/schedule';
   private statusURL = 'hnode2/irrigation/status';
   private schedulerStateURL = 'hnode2/irrigation/schedule/state';
-  private operationsURL = 'hnode2/irrigation/operations';
+  private operationsURL = 'hnode2/irrigation/operation';
 
   constructor( private http: HttpClient ) { }
 
@@ -623,6 +624,7 @@ export class IrrigationDataService {
 
   postCreateOperation( crc32ID: string, createFields: Record< string, any> ) {
     const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.operationsURL );
+    console.log( reqURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
@@ -633,13 +635,16 @@ export class IrrigationDataService {
       "schedulerState": ((enabled == true) ? "enabled" : "disabled")
     };
 
+    console.log("postSchEnable");
+    console.log( opFields );
+
     return this.postCreateOperation( crc32ID, opFields );
   }
 
   postExecSequenceOperation( crc32ID : string, sequenceID : string ) {
 
     const opFields : Record< string, any> = {
-      "type":"scheduler_state",
+      "type":"exec_sequence",
       "objIDList":[sequenceID] 
     };
 
@@ -652,20 +657,21 @@ export class IrrigationDataService {
   }
 
   getControlsConfig( crc32ID : string ) : Observable<ControlsConfig> {
+    const statusObs$ = this.getStatus( crc32ID );
     const zoneObs$ = this.getZonesList( crc32ID );
     const seqObs$ = this.getSequencesList( crc32ID );
 
-    const combo$ = combineLatest([zoneObs$, seqObs$]);
+    const combo$ = combineLatest([statusObs$, zoneObs$, seqObs$]);
 
     const cbObs$ = combo$.pipe(
-      map(([zones, sequences]) => {
+      map(([status, zones, sequences]) => {
+        console.log(status);
         console.log(zones);
         console.log(sequences);
 
-        const nullZones : Zone[] = [];
-        const nullSequences : Sequence[] = [];
-        const controlsCD : ControlsConfig = {zoneList: nullZones, sequenceList: nullSequences};
+        const controlsCD : ControlsConfig = {status: {} as Status, zoneList: [], sequenceList: []};
 
+        controlsCD.status = status;
         controlsCD.zoneList = zones;
         controlsCD.sequenceList = sequences;
         console.log(controlsCD);

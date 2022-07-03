@@ -42,7 +42,10 @@ export class Hnode2IrrigationDeviceComponent implements OnInit {
   changeSchedulerState(value : string) : void {
       console.log("schState change: " + value);
       const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
-      this.irrData.postScheduleEnableOperation(tmpID, ((value == "enabled") ? true : false ));
+      this.irrData.postScheduleEnableOperation(tmpID, ((value == "enabled") ? true : false )).subscribe(resp=>{
+        console.log('Scheduler State Updated');
+        setTimeout(() => {this.refreshStatusConfig()}, 250);
+      });
   }
 
 }
