@@ -1,3 +1,23 @@
+.zone-actions-list-item {
+    border-radius: 25px;
+    border:solid 1px black;
+    background: lightgray;
+}
+
+.zone-actions-active-notification {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.zone-actions-active-icon {
+    color: green;
+}
+
+.zone-actions-active-msg {
+    margin-left: 5px;
+}
+
 .example-list {
     width: 500px;
     max-width: 100%;
@@ -45,4 +65,28 @@
   
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.zone-actions-activate-bar {
+    margin-left: 30px;
+}
+
+.zone-actions-inhibit-bar {
+    margin-left: 30px;
+}
+
+.button-row-label {
+   display: table-cell;
+   font-size: 14px;
+   margin-left: 8px;
+   min-width: 120px;
+}
+  
+.button-row {
+   display: table-cell;
+   width: 490px;
+}
+  
+.button-row .mat-button-base {
+   margin: 8px 8px 8px 0;
 }

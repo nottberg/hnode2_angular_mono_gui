@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { IrrigationDataService, Zone, Sequence } from '../_services/irrigation-data.service';
+import { IrrigationDataService, Status, Zone, Sequence } from '../_services/irrigation-data.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -13,6 +13,7 @@ export class HnidControlsComponent implements OnInit {
   crc32ID: string | null;
   errMsg : string;
 
+  status: Status | null = null;
   zoneList: Zone[] = [];
   sequenceList: Sequence[] = [];
 
@@ -36,6 +37,7 @@ export class HnidControlsComponent implements OnInit {
     const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
     this.irrData.getControlsConfig( tmpID ).subscribe({
       next: data => {
+        this.status = data.status;
         this.zoneList = data.zoneList;
         this.sequenceList = data.sequenceList;
         console.log( this.zoneList );
@@ -64,6 +66,19 @@ export class HnidControlsComponent implements OnInit {
     }
 
     return "Zone ID Not Found (" + zoneid + ")";
+  }
+
+  zoneActive( zoneid: string ): boolean {
+    if( this.status == null )
+      return false;
+
+    for( let i = 0; i < this.status.activeZones.length; i++ )
+    {
+      if( zoneid == this.status.activeZones[i].id )
+        return true;
+    }
+
+    return false;
   }
 
   changeSchedulerState(value : string) : void {

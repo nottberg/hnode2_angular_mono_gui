@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 
+export interface NamedObj {
+  id: string;
+  name: string;
+  description: string;
+};
+
 export interface HNIrrSwitch {
   swid: string;
   description: string;
@@ -51,12 +57,6 @@ export interface HNIrrSequence {
 export interface HNIrrOperation {
   type: string;
   operationid: string;
-};
-
-export interface NamedObj {
-  id: string;
-  name: string;
-  description: string;
 };
 
 export interface Zone {
@@ -153,11 +153,9 @@ export interface HNIrrOverallHealth {
 };
 
 export interface HNIrrStatus {
-  activeZones: string[];
+  activeZones: NamedObj[];
   date: string;
-  disabledZones: string[];
-  inhibitUntil: string;
-  inhibitZones: string[];
+  activeInhibitCnt: number;
   overallHealth: HNIrrOverallHealth;
   schedulerState: string;
   time: string;
@@ -193,11 +191,9 @@ export interface OverallHealth {
 };
 
 export interface Status {
-  activeZones: string[];
+  activeZones: NamedObj[];
   date: string;
-  disabledZones: string[];
-  inhibitUntil: string;
-  inhibitZones: string[];
+  activeInhibitCnt: number;
   overallHealth: OverallHealth;
   schedulerState: string;
   time: string;
@@ -268,10 +264,8 @@ export class IrrigationDataService {
       map<HNIrrStatus, Status>(irrStatus => {
         let status : Status = {
           activeZones: irrStatus.activeZones,
+          activeInhibitCnt: 0,
           date: irrStatus.date,
-          disabledZones: irrStatus.disabledZones,
-          inhibitUntil: irrStatus.inhibitUntil,
-          inhibitZones: irrStatus.inhibitZones,
           overallHealth: irrStatus.overallHealth,
           schedulerState: irrStatus.schedulerState,
           time: irrStatus.time,
