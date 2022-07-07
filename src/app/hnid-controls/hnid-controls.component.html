@@ -38,14 +38,32 @@
     <mat-sidenav-content>
         <mat-tab-group>
             <mat-tab label="Device Settings">
-                <h3>Scheduler State</h3>
-                <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="schedulerState">
-                    <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
-                    <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
-                </mat-button-toggle-group>
+                <div class="controls-device-pane">
+                    <!--
+                <div>
+                    <h3>Scheduler State</h3>
+                    <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="schedulerState">
+                        <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
+                        <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+            -->
+                    <h3>Rain Delay</h3>
+                    <p>The automatic scheduling of zone activations can be delayed for a set period of time with the following buttons.  To cancel a previously set delay, please consult the 'Delays' panel via the left navigation bar.</p>
+                    <section class="device-delay-bar">
+                        <div class="device-button-row-label">Delay Scheduling:</div>
+                        <div class="device-button-row">
+                            <button mat-stroked-button id="dsdelay-12h" (click)="delayScheduler($event)">12 hour</button>
+                            <button mat-stroked-button id="dsdelay-24h" (click)="delayScheduler($event)">24 hour</button>
+                            <button mat-stroked-button id="dsdelay-36h" (click)="delayScheduler($event)">36 hour</button>
+                            <button mat-stroked-button id="dsdelay-custom" (click)="delayScheduler($event)">Custom Duration</button>
+                            <button mat-stroked-button id="dsdelay-noexpiration" (click)="delayScheduler($event)">No Expiration</button>
+                        </div>
+                    </section>
+                </div>
             </mat-tab>
             <mat-tab label="Zone Control">
-                <mat-list>
+                <mat-list class="controls-zone-control-pane">
                     <mat-list-item *ngFor="let zone of zoneList">
                         <div matLine class="zone-actions-list-item">
                             <mat-expansion-panel matLine>
@@ -79,77 +97,64 @@
                                 </div>
                             </section>       
                         </div>
-                        <!--
-                        <mat-grid-list cols="1">
-                            <mat-grid-tile>
-                                <p>Test content</p>                                
-                        <mat-expansion-panel>
-                            <mat-panel-title>Zone: {{zone.name}}</mat-panel-title>
-                        </mat-expansion-panel>       
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <mat-divider></mat-divider>
-                        <section>
-                            <div class="button-row-label">Activate Zone</div>
-                            <div class="button-row">
-                                <button mat-button id="activate-30s-{{zone.zoneid}}" (click)="activateZone($event)">30 sec</button>
-                                <button mat-button id="activate-1m-{{zone.zoneid}}" (click)="activateZone($event)">1 min</button>
-                                <button mat-button id="activate-5m-{{zone.zoneid}}" (click)="activateZone($event)">5 min</button>
-                                <button mat-button id="activate-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
-                            </div>
-                        </section>
-                    </mat-grid-tile>
-                    <mat-grid-tile>    
-                        <mat-divider></mat-divider>
-                        <div class="button-row-label">Disable Zone</div>
-                        <div class="button-row">
-                            <button mat-button id="inhibit-12h-{{zone.zoneid}}" (click)="activateZone($event)">12 hour</button>
-                            <button mat-button id="inhibit-24h-{{zone.zoneid}}" (click)="activateZone($event)">24 hour</button>
-                            <button mat-button id="inhibit-36h-{{zone.zoneid}}" (click)="activateZone($event)">36 hour</button>
-                            <button mat-button id="inhibit-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
-                            <button mat-button id="inhibit-noexpire-{{zone.zoneid}}" (click)="activateZone($event)">No Expiration</button>
-                        </div>          
-                        </mat-grid-tile>
-                        </mat-grid-list>
-                    -->     
                     </mat-list-item>
                 </mat-list>
             </mat-tab>
-            <mat-tab label="Execute Sequence">
-                <h3>Select sequence to execute:</h3>
-                <mat-select [(value)]="this.selectedSequenceID">
-                    <mat-option *ngFor="let seq of sequenceList" value="{{seq.sequenceid}}">{{seq.name}}</mat-option>
-                </mat-select>
-                <button class="mat-raised-button" (click)="executeSequence()">Execute Sequence</button>      
+            <mat-tab label="Stored Sequence Control">
+                <div class="controls-cancel-sequence-pane" *ngIf="isSequenceActive() == true">
+                    <h3>Cancel Running Sequence</h3>
+                    <p>Press the button below to stop the execution of the currently running sequence.</p>
+                    <button mat-stroked-button (click)="cancelActiveSequence()">Cancel Sequence: {{getActiveSequenceName()}}</button>
+                </div>
+                <div class="controls-execute-sequence-pane" *ngIf="isSequenceActive() == false">
+                    <p>Select the stored sequence to be executed in the drop down selection box and then press the 'Execute Sequence' button to begin execution on the controller.  To create a new stored sequence please consult the 'Sequences' panel via the left navigation bar.</p>
+                    <div class="controls-sequence-select">
+                        <mat-select [(value)]="this.selectedSequenceID">
+                            <mat-option *ngFor="let seq of sequenceList" value="{{seq.sequenceid}}">{{seq.name}}</mat-option>
+                        </mat-select>
+                    </div>
+                    <button mat-stroked-button (click)="executeSequence()">Execute Sequence</button>
+                </div>
             </mat-tab>            
             <mat-tab label="One-Time Sequence">
-                <form>
-                    <mat-form-field>
-                        <mat-hint>On Duration (HH:MM:SS)</mat-hint>
-                        <input matInput name="oneTimeOnDuration" [(ngModel)]="onDuration"/>
-                    </mat-form-field>           
-                    <mat-form-field>
-                        <mat-hint>Off Duration (HH:MM:SS)</mat-hint>
-                        <input matInput name="oneTimeOffDuration" [(ngModel)]="offDuration"/>
-                    </mat-form-field>
-                    <br/>  
-                    <div class="example-container">
-                        <h3>Sequence Entries</h3>
-                        <p>Drag entries to reorder sequence.</p>
-                        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-                            <div class="example-box" *ngFor="let zoneID of oneTimeZoneIDList" cdkDrag>{{getZoneName(zoneID)}}</div>
+                <div class="controls-cancel-sequence-pane" *ngIf="isSequenceActive() == true">
+                    <h3>Cancel Running Sequence</h3>
+                    <p>Press the button below to stop the execution of the currently running sequence.</p>
+                    <button mat-stroked-button (click)="cancelActiveSequence()">Cancel Sequence: {{getActiveSequenceName()}}</button>
+                </div>
+                <div class="controls-onetime-sequence-pane" *ngIf="isSequenceActive() == false">
+                    <p>Use the following controls to specify a one time zone activation sequence.  When the sequence is as desired press the 'Execute Sequence' button at the bottom to submit the sequence to the controller for execution.</p>
+                    <p>The 'On Duration' field controls the amount of time each zone in the sequence will spend in an activated state.  Once a zone has completed the activated phase, then the controller will delay for the 'Off Duration' period of time before activating the next zone in the sequence.</p>
+                    <form>
+                        <div class="controls-onetime-duration-row">
+                            <mat-form-field>
+                                <mat-hint>On Duration (HH:MM:SS)</mat-hint>
+                                <input matInput name="oneTimeOnDuration" [(ngModel)]="onDuration"/>
+                            </mat-form-field>           
+                            <mat-form-field>
+                                <mat-hint>Off Duration (HH:MM:SS)</mat-hint>
+                                <input matInput name="oneTimeOffDuration" [(ngModel)]="offDuration"/>
+                            </mat-form-field>
+                        </div> 
+                        <div class="controls-sequence-list-section">
+                            <p>The following box displays an ordered list of the zones in the sequence.  The top entry will be activated first, followed by the next entry, etc.  The same zone can appear more than once in the sequence.  The entries in the list can be reordered by grabbing an entry and dragging it up or down to achieve a desired order.</p>
+                            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                                <div class="example-box" *ngFor="let zoneID of oneTimeZoneIDList" cdkDrag>{{getZoneName(zoneID)}}</div>
+                            </div>
+                            <div class="controls-zone-add-remove-section">
+                                <p>The following drop-down selector and plus/minus buttons can be used to add/remove zones from the ordered sequence list above.</p>
+                                <div class="controls-zone-add-remove-row">
+                                    <button mat-icon-button (click)="addZoneID()"><mat-icon>add</mat-icon></button>
+                                    <button mat-icon-button (click)="removeZoneID()"><mat-icon>remove</mat-icon></button>
+                                    <mat-select class="controls-zone-select" [(value)]="this.selectedZoneID">
+                                        <mat-option *ngFor="let zone of zoneList" value="{{zone.zoneid}}">{{zone.name}}</mat-option>
+                                    </mat-select>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <p>Add and remove sequence entries.</p>
-                            <mat-select [(value)]="this.selectedZoneID">
-                                <mat-option *ngFor="let zone of zoneList" value="{{zone.zoneid}}">{{zone.name}}</mat-option>
-                            </mat-select>
-                            <button class="mat-icon-button" (click)="addZoneID()"><mat-icon>add</mat-icon></button>
-                            <button class="mat-icon-button" (click)="removeZoneID()"><mat-icon>remove</mat-icon></button>
-                        </div>
-                    </div>
-                    <button class="mat-raised-button" (click)="executeOneTimeSequence()">Execute Sequence</button>
-                </form>      
+                        <button mat-stroked-button (click)="executeOneTimeSequence()">Execute Sequence</button>
+                    </form>
+                </div>
             </mat-tab>
         </mat-tab-group>
     </mat-sidenav-content>        

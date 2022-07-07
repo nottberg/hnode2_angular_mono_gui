@@ -40,6 +40,13 @@ export class HnidControlsComponent implements OnInit {
         this.status = data.status;
         this.zoneList = data.zoneList;
         this.sequenceList = data.sequenceList;
+
+        if( (this.sequenceList != null) && (this.selectedSequenceID == null) )
+          this.selectedSequenceID = this.sequenceList[0].sequenceid;
+
+        if( (this.zoneList != null) && (this.selectedZoneID == null) )
+          this.selectedZoneID = this.zoneList[0].zoneid;
+
         console.log( this.zoneList );
         console.log( this.sequenceList );       
       },
@@ -218,4 +225,34 @@ export class HnidControlsComponent implements OnInit {
       console.log('inhibit request');
     }
   }
+
+  delayScheduler( event: any ) {
+    console.log( "delay scheduler click");
+    console.log( event );
+    const durRegEx = RegExp('([0-9]+)([hms])');
+    var idStr = event.target.closest('button').id;
+    const paramArray = idStr.split("-");
+    const cmdStr = paramArray[0];
+    const durStr = paramArray[1];
+    const zoneID = paramArray[2];
+  }
+
+  isSequenceActive() : boolean
+  {
+    // FIXME
+    return false;
+  }
+
+  getActiveSequenceName() : string
+  {
+    // FIXME
+    return "Bob's Sequence";
+  }
+
+  cancelActiveSequence() : void
+  {
+    // FIXME
+  }
+
+
 }

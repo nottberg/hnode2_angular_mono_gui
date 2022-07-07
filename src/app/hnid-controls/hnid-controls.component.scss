@@ -18,6 +18,11 @@
     margin-left: 5px;
 }
 
+.controls-sequence-list-section {
+    margin-top: 15px;
+    width:500px;
+}
+
 .example-list {
     width: 500px;
     max-width: 100%;
@@ -89,4 +94,85 @@
   
 .button-row .mat-button-base {
    margin: 8px 8px 8px 0;
+}
+
+.controls-device-pane {
+    width: 700px;
+    margin-top: 15px;
+    margin-left: 30px;
+}
+
+.controls-zone-control-pane {
+    width: 800px;
+    margin-top: 15px;
+}
+
+.device-delay-bar {
+    margin-left: 30px;
+}
+
+.device-button-row-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+}
+   
+.device-button-row {
+    display: table-cell;
+    width: 600px;
+}
+   
+.device-button-row {
+    margin: 8px 8px 8px 0;
+}
+
+.controls-cancel-sequence-pane {
+    width: 500px;
+    margin-top: 15px;
+    margin-left: 30px;
+}
+
+.controls-execute-sequence-pane {
+    width: 500px;
+    margin-top: 15px;
+    margin-left: 30px;
+}
+
+.controls-onetime-sequence-pane {
+    width: 500px;
+    margin-top: 15px;
+    margin-left: 30px;
+}
+
+.controls-onetime-duration-row {
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.controls-sequence-select {
+    font-size: 16px;
+    margin-bottom: 30px;
+    border:solid 1px lightgray;
+}
+
+.controls-zone-add-remove-section {
+    width: 500px;
+    margin-top: 15px;
+}
+
+.controls-zone-add-remove-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+.controls-zone-select {
+    margin-left: 15px;
+    padding-top: 8px;
+    font-size: 16px;
+    border:solid 1px lightgray;
 }
