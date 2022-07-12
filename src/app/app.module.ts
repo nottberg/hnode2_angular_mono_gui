@@ -47,6 +47,8 @@ import { HnidModifiersEditDialogComponent } from './hnid-modifiers-edit-dialog/h
 import { HnidSequencesComponent } from './hnid-sequences/hnid-sequences.component';
 import { HnidSequenceEditDialogComponent } from './hnid-sequence-edit-dialog/hnid-sequence-edit-dialog.component';
 import { HnidControlsComponent } from './hnid-controls/hnid-controls.component';
+import { HnidInhibitsComponent } from './hnid-inhibits/hnid-inhibits.component';
+import { HnidInhibitEditDialogComponent } from './hnid-inhibit-edit-dialog/hnid-inhibit-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import { HnidControlsComponent } from './hnid-controls/hnid-controls.component';
     HnidModifiersEditDialogComponent,
     HnidSequencesComponent,
     HnidSequenceEditDialogComponent,
-    HnidControlsComponent
+    HnidControlsComponent,
+    HnidInhibitsComponent,
+    HnidInhibitEditDialogComponent
   ],
   imports: [
     BrowserModule,

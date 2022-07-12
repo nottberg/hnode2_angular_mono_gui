@@ -12,6 +12,7 @@ import { HnidZonesComponent } from './hnid-zones/hnid-zones.component';
 import { HnidPlacementsComponent } from './hnid-placements/hnid-placements.component';
 import { HnidModifiersComponent } from './hnid-modifiers/hnid-modifiers.component';
 import { HnidSequencesComponent } from './hnid-sequences/hnid-sequences.component';
+import { HnidInhibitsComponent } from './hnid-inhibits/hnid-inhibits.component';
 import { Hnode2TestDeviceComponent } from './hnode2-test-device/hnode2-test-device.component';
 
 const routes: Routes = [
@@ -27,7 +28,7 @@ const routes: Routes = [
   { path: 'hnode2-irrigation-device/:crc32ID/placements', component: HnidPlacementsComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/modifiers', component: HnidModifiersComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/sequences', component: HnidSequencesComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/inhibits', component: HnidSequencesComponent },
+  { path: 'hnode2-irrigation-device/:crc32ID/inhibits', component: HnidInhibitsComponent },
   { path: 'hnode2-test-device/:crc32ID', component: Hnode2TestDeviceComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];

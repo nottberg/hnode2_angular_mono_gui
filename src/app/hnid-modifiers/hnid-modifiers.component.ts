@@ -201,7 +201,7 @@ export class HnidModifiersComponent implements OnInit {
     let curMod : Modifier = this.selection.selected[0];
 
     dialogCfg.data = {
-      prompt: 'Delete placement - ' + curMod.name
+      prompt: 'Delete modifier - ' + curMod.name
     };
 
     const dialogRef = this.dialog.open( HnidConfirmDialogComponent, dialogCfg );

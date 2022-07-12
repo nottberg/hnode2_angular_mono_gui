@@ -54,6 +54,15 @@ export interface HNIrrSequence {
   sequenceid: string;
 };
 
+export interface HNIrrInhibit {
+  name: string;
+  type: string;
+  zoneID: string;
+  duration: string;
+  expiresDateStr: string;
+  inhibitid : string;
+};
+
 export interface HNIrrOperation {
   type: string;
   operationid: string;
@@ -116,6 +125,20 @@ export interface Sequence {
 
 export interface SequenceConfig {
   sequencesList: Sequence[];
+  znmList: NamedObj[];
+};
+
+export interface Inhibit {
+  name: string;
+  type: string;
+  zoneID: string;
+  duration: string;
+  expiresDateStr: string;
+  inhibitid: string;
+};
+
+export interface InhibitConfig {
+  inhibitsList: Inhibit[];
   znmList: NamedObj[];
 };
 
@@ -233,7 +256,8 @@ export class IrrigationDataService {
   private zonesURL = 'hnode2/irrigation/zones';
   private placementsURL = 'hnode2/irrigation/placement';
   private modifiersURL = 'hnode2/irrigation/modifier';
-  private sequencesURL = 'hnode2/irrigation/sequence';  
+  private sequencesURL = 'hnode2/irrigation/sequence';
+  private inhibitsURL = 'hnode2/irrigation/inhibit';    
   private schURL = 'hnode2/irrigation/schedule';
   private statusURL = 'hnode2/irrigation/status';
   private schedulerStateURL = 'hnode2/irrigation/schedule/state';
@@ -580,6 +604,65 @@ export class IrrigationDataService {
 
   deleteSequence( crc32ID: string, pid: string ) {
     const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.sequencesURL, pid );
+    return this.http.delete( reqURL, { observe: 'response' } );
+  }
+
+  getInhibitsList( crc32ID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.inhibitsURL );
+    const rObs = this.http.get<HNIrrInhibit[]>( reqURL );
+        
+    return rObs.pipe(
+      map<HNIrrInhibit[], Inhibit[]>(irrInhibit => {
+        let inhibitsList : Inhibit[] = [];
+        irrInhibit.forEach( irrInh => {
+          let inhibit : Inhibit = {
+            name: irrInh.name,
+            type: irrInh.type,
+            zoneID: irrInh.zoneID,
+            expiresDateStr: irrInh.expiresDateStr,
+            duration: "",
+            inhibitid: irrInh.inhibitid
+          }
+          inhibitsList.push( inhibit );
+        });
+        return inhibitsList;
+      }))
+
+  }
+
+  getInhibitsConfig( crc32ID: string ) : Observable<InhibitConfig> {
+    const inhibitsObs$ = this.getInhibitsList( crc32ID );
+    const znmObs$ = this.getZoneNameList( crc32ID );
+
+    const combo$ = combineLatest([inhibitsObs$, znmObs$]);
+
+    const cbObs$ = combo$.pipe(
+      map(([inhibitsList, znmList]) => {
+        console.log(inhibitsList);
+        console.log(znmList);
+
+        const nullInhibit : Inhibit[] = [];
+        const nullZNMList : NamedObj[] = [];
+        const inhibitCD : InhibitConfig = {inhibitsList: nullInhibit, znmList: nullZNMList};
+
+        inhibitCD.inhibitsList = inhibitsList;
+        inhibitCD.znmList = znmList;
+        console.log(inhibitCD);
+
+        return inhibitCD;
+      })
+    );
+
+    return cbObs$;
+  }
+
+  postCreateInhibit( crc32ID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.inhibitsURL );
+    return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
+  }
+
+  deleteInhibit( crc32ID: string, pid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.inhibitsURL, pid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 

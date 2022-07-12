@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+    <mat-form-field>
+        <mat-hint>Name</mat-hint>
+        <input matInput formControlName="nameFC" (input)="onFieldUpdate('nameFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Type</mat-hint>
+        <mat-select [(value)]="typeSelected">
+            <mat-option value="scheduler">Scheduler</mat-option>
+            <mat-option value="scheduler_noexpire">Scheduler (No Expiration)</mat-option>
+            <mat-option value="zone">Zone</mat-option>
+            <mat-option value="zone_noexpire">Zone (No Expiration)</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Duration (HHH:MM:SS)</mat-hint>
+        <input matInput formControlName="durationFC" (input)="onFieldUpdate('durationFC')"/>
+    </mat-form-field>
+    <br/>
+    <mat-form-field>
+        <mat-hint>Zone</mat-hint>
+        <mat-select [(value)]="zoneSelected">
+            <mat-option *ngFor="let zone of zoneAvail" [value]="zone.id">{{zone.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br/>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Close</button>
+    <button class="mat-raised-button mat-primary" (click)="save()">Save</button>
+</mat-dialog-actions>

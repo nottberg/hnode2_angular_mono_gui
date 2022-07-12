@@ -53,10 +53,12 @@ timezone: string;
                 <p><strong>Time: </strong>{{status.time}}</p>
                 <p><strong>Time Zone: </strong>{{status.timezone}}</p>
                 <p><strong>Scheduler State: </strong>{{status.schedulerState}}</p>
+                <!--
                 <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="status.schedulerState">
                     <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
                     <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
                 </mat-button-toggle-group>
+            -->
                 <p><strong>Health: </strong>{{status.overallHealth.status}}  {{status.overallHealth.msg}}</p>
             </mat-card-content> 
         </mat-card>

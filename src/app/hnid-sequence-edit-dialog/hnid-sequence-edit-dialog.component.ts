@@ -27,6 +27,8 @@ export class HnidSequenceEditDialogComponent implements OnInit {
 
   availZones : NMObjSelectionTracker[];
 
+  selectedType : any;
+
   selectedObjID : any;
 
   constructor(
@@ -50,6 +52,8 @@ export class HnidSequenceEditDialogComponent implements OnInit {
      {
       this.selectedObjID = this.availZones[0].id;
      }
+
+     this.selectedType = this.curSeq.type;
 
      console.log(data);
   }
@@ -101,8 +105,11 @@ export class HnidSequenceEditDialogComponent implements OnInit {
   }
 
   save() {
+    if( this.selectedType != this.curSeq.type )
+      this.updateFlags |= SQUPD_TYPE;
+
     const rtnData = { form: this.form.value,
-                      type: this.curSeq.type,
+                      type: this.selectedType,
                       objIDList: this.curSeq.objIDList,
                       updFlags: this.updateFlags
                     };
