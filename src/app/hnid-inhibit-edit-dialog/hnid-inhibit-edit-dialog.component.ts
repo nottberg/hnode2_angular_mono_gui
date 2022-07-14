@@ -41,13 +41,16 @@ export class HnidInhibitEditDialogComponent implements OnInit {
     this.zoneAvail = data.zoneAvail;
 
     this.zoneSelected = "";
-    if( data.curInhibit.zoneID )
-      this.zoneSelected = data.curInhibit.zoneID;
-
     this.typeSelected = "scheduler";
-    if( data.curInhibit.type )
-      this.typeSelected = data.curInhibit.type;
-  
+
+    if( data.curInhibit )
+    { 
+      if( data.curInhibit.zoneID )
+        this.zoneSelected = data.curInhibit.zoneID;
+
+      if( data.curInhibit.type )
+        this.typeSelected = data.curInhibit.type;
+    }
   }
 
   ngOnInit(): void {

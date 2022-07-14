@@ -73,7 +73,7 @@ export class HnidInhibitsComponent implements OnInit {
         return this.znmList[i].name;
     }
 
-    return "Zone Not Found (" + zoneid + ")";
+    return "";
   }
 
   getTypeStr( type: string ) : string {
@@ -92,13 +92,13 @@ export class HnidInhibitsComponent implements OnInit {
   onNewButtonClick(): void
   {
     const dialogCfg = new MatDialogConfig();
-    const nullInhibit: Inhibit = {inhibitid: "", name: "", type: "scheduler", duration: "", expiresDateStr: "", zoneID: ""};
+    const nullInhibit: Inhibit = {inhibitid: "", name: "", type: "", duration: "", expirationDateStr: "", zoneID: ""};
 
     dialogCfg.autoFocus = true;
 
     dialogCfg.data = {
       description: 'Create Inhibit',
-      curMod: nullInhibit,
+      curInhibit: nullInhibit,
       zoneAvail: this.znmList
     };
 
@@ -108,7 +108,7 @@ export class HnidInhibitsComponent implements OnInit {
       data => {
         if( data )
         {
-          var updateFields: Record<string,any> = {modID: ""};
+          var updateFields: Record<string,any> = {inhibitID: ""};
           console.log("Dialog output:", data);
           
           if( data.updFlags & INUPD_NAME )

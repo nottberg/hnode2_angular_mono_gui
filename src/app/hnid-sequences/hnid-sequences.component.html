@@ -1,39 +1,6 @@
 <mat-sidenav-container class="example-container">
     <mat-sidenav mode="side" opened>
-        <mat-nav-list>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}">
-                <mat-icon>other_houses</mat-icon>
-                Status
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/controls">
-                <mat-icon>build_circle</mat-icon>
-                Manual Control
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/schedule">
-                <mat-icon>schedule</mat-icon>
-                Schedule
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/zones">
-                <mat-icon>yard</mat-icon>
-                Zones
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/placements">
-                <mat-icon>punch_clock</mat-icon>
-                Placements
-            </a>            
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/modifiers">
-                <mat-icon>exposure</mat-icon>
-                Modifiers
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/sequences">
-                <mat-icon>playlist_play</mat-icon>
-                Sequences
-            </a>
-            <a mat-list-item *ngIf="crc32ID" routerLink="/hnode2-irrigation-device/{{crc32ID}}/inhibits">
-                <mat-icon>block</mat-icon>
-                Inhibits
-            </a>
-        </mat-nav-list>
+      <app-hnid-nav-list></app-hnid-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
 

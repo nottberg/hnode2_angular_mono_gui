@@ -59,7 +59,7 @@ export interface HNIrrInhibit {
   type: string;
   zoneID: string;
   duration: string;
-  expiresDateStr: string;
+  expirationDateStr: string;
   inhibitid : string;
 };
 
@@ -133,7 +133,7 @@ export interface Inhibit {
   type: string;
   zoneID: string;
   duration: string;
-  expiresDateStr: string;
+  expirationDateStr: string;
   inhibitid: string;
 };
 
@@ -619,7 +619,7 @@ export class IrrigationDataService {
             name: irrInh.name,
             type: irrInh.type,
             zoneID: irrInh.zoneID,
-            expiresDateStr: irrInh.expiresDateStr,
+            expirationDateStr: irrInh.expirationDateStr,
             duration: "",
             inhibitid: irrInh.inhibitid
           }
