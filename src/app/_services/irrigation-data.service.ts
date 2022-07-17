@@ -57,7 +57,7 @@ export interface HNIrrSequence {
 export interface HNIrrInhibit {
   name: string;
   type: string;
-  zoneID: string;
+  zoneid: string;
   duration: string;
   expirationDateStr: string;
   inhibitid : string;
@@ -131,7 +131,7 @@ export interface SequenceConfig {
 export interface Inhibit {
   name: string;
   type: string;
-  zoneID: string;
+  zoneid: string;
   duration: string;
   expirationDateStr: string;
   inhibitid: string;
@@ -149,7 +149,6 @@ export interface Operation {
 
 export interface HNIrrScheduleAction {
   name: string;
-  action: string;
   startTime: string;
   endTime: string;
   zoneid: string;
@@ -165,8 +164,36 @@ export interface HNIrrScheduleWeek  {
   Saturday: HNIrrScheduleAction[];
 };
 
+export interface HNIrrAppliedModifier {
+  calculationStr: string;
+  deltaSeconds: number;
+  modifierName: string;
+  modifierid: string;
+};
+
+export interface HNIrrSecondsPerDay {
+  Sunday: number;
+  Monday: number;
+  Tuesday: number;
+  Wednesday: number;
+  Thursday: number;
+  Friday: number;
+  Saturday: number;
+};
+
+export interface HNIrrScheduleZoneStatistics {
+  appliedModifiers: HNIrrAppliedModifier[];
+  avgSecondsPerDay: number;
+  baseSeconds: number;
+  secondsPerDay: HNIrrSecondsPerDay;
+  totalSeconds: number;
+  zoneName: string;
+  zoneid: string;
+};
+
 export interface HNIrrSchedule {
   scheduleMatrix: HNIrrScheduleWeek;
+  zoneStatistics: HNIrrScheduleZoneStatistics[];
   scheduleTimezone: string;
 };
 
@@ -187,7 +214,6 @@ export interface HNIrrStatus {
 
 export interface ScheduleAction {
   name: string;
-  action: string;
   startTime: string;
   endTime: string;
   zoneid: string;
@@ -203,8 +229,36 @@ export interface ScheduleWeek  {
   Saturday: ScheduleAction[];
 };
 
+export interface AppliedModifier {
+  calculationStr: string;
+  deltaSeconds: number;
+  modifierName: string;
+  modifierid: string;
+};
+
+export interface SecondsPerDay {
+  Sunday: number;
+  Monday: number;
+  Tuesday: number;
+  Wednesday: number;
+  Thursday: number;
+  Friday: number;
+  Saturday: number;
+};
+
+export interface ScheduleZoneStatistics {
+  appliedModifiers: AppliedModifier[];
+  avgSecondsPerDay: number;
+  baseSeconds: number;
+  secondsPerDay: SecondsPerDay;
+  totalSeconds: number;
+  zoneName: string;
+  zoneid: string;
+};
+
 export interface Schedule {
   scheduleMatrix: ScheduleWeek;
+  zoneStatistics: ScheduleZoneStatistics[];
   scheduleTimezone: string;
 };
 
@@ -618,7 +672,7 @@ export class IrrigationDataService {
           let inhibit : Inhibit = {
             name: irrInh.name,
             type: irrInh.type,
-            zoneID: irrInh.zoneID,
+            zoneid: irrInh.zoneid,
             expirationDateStr: irrInh.expirationDateStr,
             duration: "",
             inhibitid: irrInh.inhibitid

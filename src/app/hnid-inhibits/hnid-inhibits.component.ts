@@ -92,7 +92,7 @@ export class HnidInhibitsComponent implements OnInit {
   onNewButtonClick(): void
   {
     const dialogCfg = new MatDialogConfig();
-    const nullInhibit: Inhibit = {inhibitid: "", name: "", type: "", duration: "", expirationDateStr: "", zoneID: ""};
+    const nullInhibit: Inhibit = {inhibitid: "", name: "", type: "", duration: "", expirationDateStr: "", zoneid: ""};
 
     dialogCfg.autoFocus = true;
 
@@ -118,7 +118,7 @@ export class HnidInhibitsComponent implements OnInit {
           if( data.updFlags & INUPD_DURATION )
             updateFields['duration'] = data.form.durationFC;
           if( data.updFlags & INUPD_ZONE )
-            updateFields['zoneID'] = data.form.zoneIDFC;
+            updateFields['zoneid'] = data.form.zoneidFC;
 
           console.log( updateFields );
 

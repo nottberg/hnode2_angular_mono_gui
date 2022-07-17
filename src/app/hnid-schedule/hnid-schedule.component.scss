@@ -1,3 +1,104 @@
-table {
+.schedule-byzone-pane {
+    max-width: 1000px;
+}
+
+.schedule-zone-intro {
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.schedule-zone-list-item {
+    margin: 10px;
+    border-radius: 25px;
+    border:solid 1px black;
+    background: lightgray;
+}
+
+.schedule-zli-title {
+    margin-left: 30px;
+}
+
+.schedule-zli-totals {
+    margin-left: 30px;
+}
+
+.schedule-zli-weekly-distribution {
+    margin-left: 30px;
+}
+
+.schedule-zli-modcalc {
+    margin-right: 30px;
+    margin-left: 30px;
+}
+
+.scalc-table {
+    table-layout: fixed;
     width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.scalc-name-col {
+    width: 40%;
+}
+
+.scalc-calc-col {
+    width: 30%;
+}
+
+.scalc-delta-col {
+    width: 10%;
+    border-left: solid 2px black;
+}
+
+.scalc-label-col {
+    width: 20%;
+}
+
+.scalc-basedur-row {
+    padding: 5px;
+}
+
+.scalc-basedur-modifier {
+    border-bottom: solid 1px black;
+}
+
+.scalc-basedur-calc {
+    border-bottom: solid 1px black;
+}
+
+.scalc-basedur-value {
+    text-align: right;
+    font-weight: normal;
+}
+
+.scalc-basedur-label {
+    font-weight: normal;
+    text-align: left;
+}
+
+.scalc-mod-row {
+    padding: 5px;
+}
+
+.scalc-mod-name {
+}
+
+.scalc-mod-calc {
+}
+
+.scalc-mod-delta {
+    text-align: right;
+}
+
+.scalc-totaldur-row {
+    padding: 5px;
+}
+
+.scalc-totaldur-header {
+}
+
+.scalc-totaldur-value {
+    font-weight: bold;
+    text-align: right;
 }

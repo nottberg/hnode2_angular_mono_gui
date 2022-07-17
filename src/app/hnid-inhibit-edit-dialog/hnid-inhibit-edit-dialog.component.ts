@@ -45,8 +45,8 @@ export class HnidInhibitEditDialogComponent implements OnInit {
 
     if( data.curInhibit )
     { 
-      if( data.curInhibit.zoneID )
-        this.zoneSelected = data.curInhibit.zoneID;
+      if( data.curInhibit.zoneid )
+        this.zoneSelected = data.curInhibit.zoneid;
 
       if( data.curInhibit.type )
         this.typeSelected = data.curInhibit.type;
@@ -58,7 +58,7 @@ export class HnidInhibitEditDialogComponent implements OnInit {
       description: [this.description, []],
       nameFC: [this.curInhibit.name, []],
       durationFC: [this.curInhibit.duration, []],
-      zoneIDFC: [this.curInhibit.zoneID, []]
+      zoneidFC: [this.curInhibit.zoneid, []]
     });
   }
 
@@ -74,9 +74,9 @@ export class HnidInhibitEditDialogComponent implements OnInit {
 
   save() {
     console.log("zoneSelected: " + this.zoneSelected )
-    if( this.zoneSelected != this.curInhibit.zoneID )
+    if( this.zoneSelected != this.curInhibit.zoneid )
     {
-      this.form.value.zoneIDFC = this.zoneSelected;
+      this.form.value.zoneidFC = this.zoneSelected;
       this.updateFlags |= INUPD_ZONE;
     }
 
