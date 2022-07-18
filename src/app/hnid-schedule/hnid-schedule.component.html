@@ -37,27 +37,67 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="schedule-zli-weekly-distribution">
-                                <h3>Weekly distribution</h3>
-                                <p>Average Daily Duration: {{formatSecondsToHMS(zs.avgSecondsPerDay)}}</p>
-                                <table>
+                                <div class="schedule-zli-weekly-section">
+                                <h3>Weekly Schedule</h3>
+                                <table class="zsch-weekly-table">
+                                    <colgroup>
+                                        <col class="zsch-label-col">
+                                        <col class="zsch-sat-span-col" span="2">
+                                        <col class="zsch-mon-span-col" span="2">
+                                        <col class="zsch-tue-span-col" span="2">
+                                        <col class="zsch-wed-span-col" span="2">
+                                        <col class="zsch-thr-span-col" span="2">
+                                        <col class="zsch-fri-span-col" span="2">
+                                        <col class="zsch-sun-span-col" span="2">
+                                        <col class="zsch-dailyavg-col">
+                                    </colgroup>
                                     <tr>
-                                        <th>Sat</th>
-                                        <th>Mon</th>
-                                        <th>Tue</th>
-                                        <th>Wed</th>
-                                        <th>Thr</th>
-                                        <th>Fri</th>
-                                        <th>Sun</th>
+                                        <th></th>
+                                        <th colspan="2">Sat</th>
+                                        <th colspan="2">Mon</th>
+                                        <th colspan="2">Tue</th>
+                                        <th colspan="2">Wed</th>
+                                        <th colspan="2">Thr</th>
+                                        <th colspan="2">Fri</th>
+                                        <th colspan="2">Sun</th>
+                                        <th>Daily Average</th>
                                     </tr>
                                     <tr>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Saturday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Monday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Tuesday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Wednesday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Thursday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Friday)}}</td>
-                                        <td>{{formatSecondsToHMS(zs.secondsPerDay.Sunday)}}</td>
+                                        <td class="zsch-totaldur-cell">Daily Duration</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Saturday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Monday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Tuesday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Wednesday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Thursday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Friday)}}</td>
+                                        <td class="zsch-daytotal-cell" colspan="2">{{formatSecondsToHMS(zs.secondsPerDay.Sunday)}}</td>
+                                        <td class="zsch-weekavg-cell">{{formatSecondsToHMS(zs.avgSecondsPerDay)}}</td>
+                                    </tr>
+                                    <tr *ngFor="let zsch of scheduleByZone[zs.zoneid]; let i = index">        
+                                        <td class="zsch-startdur-cell">{{getStartDurationLabel(i)}}</td>
+
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 0)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 0)}}</td>
+
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 1)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 1)}}</td>
+                                        
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 2)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 2)}}</td>
+                                        
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 3)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 3)}}</td>
+                                        
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 4)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 4)}}</td>
+                                        
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 5)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 5)}}</td>
+                                        
+                                        <td class="zsch-starttime-cell">{{getZoneScheduleStartTime( zs.zoneid, i, 6)}}</td>
+                                        <td class="zsch-rundur-cell">{{getZoneScheduleDuration( zs.zoneid, i, 6)}}</td>
+                                        
+                                        <td></td>
                                     </tr>
                                 </table>
                                 </div>

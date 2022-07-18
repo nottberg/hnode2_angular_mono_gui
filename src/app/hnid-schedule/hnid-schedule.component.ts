@@ -17,6 +17,11 @@ export class HnidScheduleComponent implements OnInit {
   nullSchedule: Schedule = {scheduleTimezone: "", scheduleMatrix : { Sunday:[], Monday:[], Tuesday:[], Wednesday:[], Thursday:[], Friday:[], Saturday:[] }, zoneStatistics: []};
   schedule: Schedule = this.nullSchedule;
 
+  scheduleByZoneRow1: any = { z1: [[{startTime:"09:00:00", duration:"00:05:00"}, {startTime:"10:00:00", duration:"00:05:00"},{startTime:"11:00:00", duration:"00:05:00"},{startTime:"12:00:00", duration:"00:05:00"},{startTime:"13:00:00", duration:"00:05:00"},{startTime:"14:00:00", duration:"00:05:00"},{startTime:"15:09:00", duration:"00:05:00"}]]};
+
+  scheduleByZone: any = { z1: [[{startTime:"16:00:00", duration:"00:05:00"}, {startTime:"17:00:00", duration:"00:05:00"},{startTime:"18:00:00", duration:"00:05:00"},{startTime:"19:00:00", duration:"00:05:00"},{startTime:"20:00:00", duration:"00:05:00"},{startTime:"21:00:00", duration:"00:05:00"},{startTime:"22:09:00", duration:"00:05:00"}],
+                               [{startTime: "", duration:""}, {startTime:"23:00:00", duration:"00:05:00"}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}]] };
+
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService ) {
     this.crc32ID = null;
     this.errMsg = "";    
@@ -74,5 +79,20 @@ export class HnidScheduleComponent implements OnInit {
       outStr += seconds.toFixed(0);
   
     return outStr;
+  }
+
+  getStartDurationLabel( row: number ) : string {
+    if( row == 0 )
+      return "Start Time / Duration";
+
+    return "";
+  }
+
+  getZoneScheduleStartTime( zoneid: string, row: number, day: number ) : string {
+    return row + "," + day;
+  }
+
+  getZoneScheduleDuration( zoneid: string, row: number, day: number ) : string {
+    return row + "," + day;
   }
 }
