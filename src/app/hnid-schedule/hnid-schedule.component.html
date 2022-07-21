@@ -5,16 +5,16 @@
     <mat-sidenav-content>
         <div *ngIf="schedule.schedulerInhibitID != ''" class="schedule-inhibit-warning-box">
             <mat-icon class="schedule-inhibit-warning-icon">warning</mat-icon>
-            <p class="schedule-inhibit-warning-text" >Automatic schedule execution is currently disabled due to "{{schedule.schedulerInhibitName}}" a delay which expires on {{schedule.schedulerInhibitExpirationDateStr}}</p>
+            <p class="schedule-inhibit-warning-text" >Automatic schedule execution is currently disabled due to "{{schedule.schedulerInhibitName}}", a delay which expires on {{schedule.schedulerInhibitExpirationDateStr}}!</p>
         </div>
         <mat-tab-group>
             <mat-tab label="By Zone">
                 <div class="schedule-byzone-pane">
-                    <p class="schedule-zone-intro">This tab displays scheduling data broken out on a per zone basis.  Times are generally displayed in a HH:MM:SS format, with the exception of the Modifier calculations which are shown in seconds.</p>
+                    <p class="schedule-zone-intro">This tab displays scheduling data broken out on a per zone basis.  Times are displayed in a HH:MM:SS format.  Durations are in a #h#m#s format.  Modifier calculations which are shown in seconds per week.</p>
                             <div class="schedule-zone-list-item" *ngFor="let zs of schedule.zoneStatistics">
                                 <h3 class="schedule-zli-title">{{zs.zoneName}}</h3>
                                 <div class="schedule-zli-modcalc">
-                                    <h3>Total Time Calculation</h3>
+                                    <p class="schedule-zli-tt-title">Total Time Calculation</p>
                                     <table class="scalc-table">
                                         <colgroup>
                                             <col class="scalc-name-col">
@@ -42,7 +42,7 @@
                                     </table>
                                 </div>
                                 <div class="schedule-zli-weekly-section">
-                                <h3>Weekly Schedule</h3>
+                                <p class="schedule-zli-weekly-title">Weekly Schedule</p>
                                 <table class="zsch-weekly-table">
                                     <colgroup>
                                         <col class="zsch-label-col">
@@ -110,27 +110,32 @@
                 </div>
             </mat-tab>
             <mat-tab label="By Day">
+                <div class="schedule-byday-pane">
+                <p class="schedule-byday-intro">This tab displays scheduling data grouped by day of the week.  Times are displayed in a HH:MM:SS format.  Durations are in a #h#m#s format.</p>
                 <mat-accordion>
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Sunday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Sunday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Sunday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Sunday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -140,24 +145,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Monday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Monday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Monday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Monday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -167,24 +175,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Tuesday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Tuesday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Tuesday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Tuesday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -194,24 +205,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Wednesday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Wednesday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Wednesday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Wednesday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -221,24 +235,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Thursday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Thursday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Thursday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Thursday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -248,24 +265,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Friday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Friday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Friday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Friday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -275,24 +295,27 @@
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                Saturday
-                            </mat-panel-title>
+                            <mat-panel-title><p class="sch-by-day-daytitle">Saturday</p></mat-panel-title>
                         </mat-expansion-panel-header>
-                        <table mat-table [dataSource]="this.schedule.scheduleMatrix.Saturday">
+                        <table class="sch-by-day-table" mat-table [dataSource]="this.schedule.scheduleMatrix.Saturday">
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Zone</th>
-                                <td mat-cell *matCellDef="let action"> {{action.name}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Zone</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.name}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="start">
-                                <th mat-header-cell *matHeaderCellDef>Start Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.startTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Start Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.startTime}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="end">
-                                <th mat-header-cell *matHeaderCellDef>End Time</th>
-                                <td mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>End Time</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{action.endTime}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="duration">
+                                <th class="sch-by-day-th" mat-header-cell *matHeaderCellDef>Duration</th>
+                                <td class="sch-by-day-td" mat-cell *matCellDef="let action"> {{reformatDuration(action.duration)}} </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -300,6 +323,7 @@
                         </table>
                     </mat-expansion-panel>
                 </mat-accordion>
+                </div>
             </mat-tab>
         </mat-tab-group>
     </mat-sidenav-content>

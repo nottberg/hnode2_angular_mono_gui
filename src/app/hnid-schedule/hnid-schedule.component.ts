@@ -12,7 +12,7 @@ export class HnidScheduleComponent implements OnInit {
   crc32ID: string | null;
   errMsg : string;
 
-  displayedColumns: string[] = ['name', 'start', 'end'];
+  displayedColumns: string[] = ['name', 'start', 'end', 'duration'];
 
   nullSchedule: Schedule = {scheduleTimezone: "", scheduleMatrix : { Sunday:[], Monday:[], Tuesday:[], Wednesday:[], Thursday:[], Friday:[], Saturday:[] }, schedulerInhibitID: "", schedulerInhibitExpirationDateStr: "", schedulerInhibitName: "", zoneStatistics: []};
   schedule: Schedule = this.nullSchedule;
@@ -55,23 +55,29 @@ export class HnidScheduleComponent implements OnInit {
     const seconds = totalSeconds % 60;
 
     let outStr = "";
-    if( hours < 10 )
-      outStr = "0" + hours.toFixed(0);
-    else
-      outStr = hours.toFixed(0);
-
-    outStr += ":";
-    if( minutes < 10 )
-      outStr += "0" + minutes.toFixed(0);
-    else
-      outStr += minutes.toFixed(0);
-
-    outStr += ":";
-    if( seconds < 10 )
-      outStr += "0" + seconds.toFixed(0);
-    else
-      outStr += seconds.toFixed(0);
+    if( hours != 0 ) outStr += hours.toFixed(0) + "h";
+    if( minutes != 0 ) outStr += minutes.toFixed(0) + "m";
+    if( seconds != 0 ) outStr += seconds.toFixed(0) + "s";
   
+    return outStr;
+  }
+
+  reformatDuration( csTimeStr : string ) : string {
+    if( csTimeStr == "" )
+      return csTimeStr;
+
+    const csArr = csTimeStr.split(":");
+    var hours = parseInt( csArr[0], 10 );
+    var minutes = parseInt( csArr[1], 10 );
+    if( minutes > 59 ) minutes = 59;
+    var seconds = parseInt( csArr[2], 10 );
+    if( seconds > 59 ) seconds = 59;
+
+    var outStr = "";
+    if( hours != 0 ) outStr += hours.toFixed(0) + "h";
+    if( minutes != 0 ) outStr += minutes.toFixed(0) + "m";
+    if( seconds != 0 ) outStr += seconds.toFixed(0) + "s";
+
     return outStr;
   }
 
@@ -97,6 +103,6 @@ export class HnidScheduleComponent implements OnInit {
       return obj.zoneid == zoneid;
     })
 
-    return zs.startsByDay[day][row].duration;
+    return this.reformatDuration( zs.startsByDay[day][row].duration );
   }
 }

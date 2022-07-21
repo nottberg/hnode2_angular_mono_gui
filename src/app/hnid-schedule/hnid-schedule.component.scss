@@ -7,14 +7,14 @@
 }
 
 .schedule-inhibit-warning-icon {
-    color: red;
+    color: orangered;
     transform: scale(2);
 }
 
 .schedule-inhibit-warning-text {
     margin-left: 30px;
     font-weight: bold;
-    font-size: 1.25em;
+    font-size: 1.35em;
 } 
  
 .schedule-byzone-pane {
@@ -34,7 +34,22 @@
 }
 
 .schedule-zli-title {
-    margin-left: 30px;
+    font-weight: bold;
+    font-size: 1.35em;
+    text-align: center;
+}
+
+.schedule-zli-tt-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 2px;
+}
+
+.schedule-zli-weekly-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 2px;
+    margin-top: 30px;
 }
 
 .schedule-zli-totals {
@@ -205,4 +220,35 @@
 .zsch-rundur-cell {
     border-right: solid 1px black;
     text-align: center;
+}
+
+.schedule-byday-pane {
+    max-width: 1200px;
+}
+
+.schedule-byday-intro {
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.sch-by-day-daytitle {
+    font-weight: bold;
+    font-size: 1.35em;
+}
+
+.sch-by-day-table {
+    width: 100%;
+}
+
+tr.sch-by-day-detail-row {
+  height: 0;
+}
+
+.sch-by-day-td {
+  border-bottom-width: 0;
+}
+  
+.sch-by-day-detail {
+  overflow: hidden;
+  display: flex;
 }
