@@ -181,12 +181,31 @@ export interface HNIrrSecondsPerDay {
   Saturday: number;
 };
 
+export interface HNIrrStartEntry {
+  startTime: string;
+  duration: string;
+};
+
+export interface HNIrrStartsByDay {
+  Sunday: HNIrrStartEntry[];
+  Monday: HNIrrStartEntry[];
+  Tuesday: HNIrrStartEntry[];
+  Wednesday: HNIrrStartEntry[];
+  Thursday: HNIrrStartEntry[];
+  Friday: HNIrrStartEntry[];
+  Saturday: HNIrrStartEntry[];
+};
+
 export interface HNIrrScheduleZoneStatistics {
   appliedModifiers: HNIrrAppliedModifier[];
   avgSecondsPerDay: number;
   baseSeconds: number;
   secondsPerDay: HNIrrSecondsPerDay;
+  startsByDay: HNIrrStartsByDay;  
   totalSeconds: number;
+  inhibitedByID: string;
+  inhibitName: string;
+  inhibitExpirationDateStr: string;
   zoneName: string;
   zoneid: string;
 };
@@ -195,6 +214,9 @@ export interface HNIrrSchedule {
   scheduleMatrix: HNIrrScheduleWeek;
   zoneStatistics: HNIrrScheduleZoneStatistics[];
   scheduleTimezone: string;
+  schedulerInhibitID: string;
+  schedulerInhibitExpirationDateStr: string;
+  schedulerInhibitName: string;  
 };
 
 export interface HNIrrOverallHealth {
@@ -246,12 +268,31 @@ export interface SecondsPerDay {
   Saturday: number;
 };
 
+export interface StartEntry {
+  startTime: string;
+  duration: string;
+};
+
+export interface StartsByDay {
+  Sunday: StartEntry[];
+  Monday: StartEntry[];
+  Tuesday: StartEntry[];
+  Wednesday: StartEntry[];
+  Thursday: StartEntry[];
+  Friday: StartEntry[];
+  Saturday: StartEntry[];
+};
+
 export interface ScheduleZoneStatistics {
   appliedModifiers: AppliedModifier[];
   avgSecondsPerDay: number;
   baseSeconds: number;
   secondsPerDay: SecondsPerDay;
+  startsByDay: StartsByDay;
   totalSeconds: number;
+  inhibitedByID: string;
+  inhibitName: string;
+  inhibitExpirationDateStr: string;
   zoneName: string;
   zoneid: string;
 };
@@ -260,6 +301,9 @@ export interface Schedule {
   scheduleMatrix: ScheduleWeek;
   zoneStatistics: ScheduleZoneStatistics[];
   scheduleTimezone: string;
+  schedulerInhibitID: string;
+  schedulerInhibitExpirationDateStr: string;
+  schedulerInhibitName: string;
 };
 
 export interface OverallHealth {

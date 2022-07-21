@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { IrrigationDataService, Schedule } from '../_services/irrigation-data.service';
+import { IrrigationDataService, Schedule, ScheduleZoneStatistics } from '../_services/irrigation-data.service';
 
 @Component({
   selector: 'app-hnid-schedule',
@@ -14,13 +14,8 @@ export class HnidScheduleComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'start', 'end'];
 
-  nullSchedule: Schedule = {scheduleTimezone: "", scheduleMatrix : { Sunday:[], Monday:[], Tuesday:[], Wednesday:[], Thursday:[], Friday:[], Saturday:[] }, zoneStatistics: []};
+  nullSchedule: Schedule = {scheduleTimezone: "", scheduleMatrix : { Sunday:[], Monday:[], Tuesday:[], Wednesday:[], Thursday:[], Friday:[], Saturday:[] }, schedulerInhibitID: "", schedulerInhibitExpirationDateStr: "", schedulerInhibitName: "", zoneStatistics: []};
   schedule: Schedule = this.nullSchedule;
-
-  scheduleByZoneRow1: any = { z1: [[{startTime:"09:00:00", duration:"00:05:00"}, {startTime:"10:00:00", duration:"00:05:00"},{startTime:"11:00:00", duration:"00:05:00"},{startTime:"12:00:00", duration:"00:05:00"},{startTime:"13:00:00", duration:"00:05:00"},{startTime:"14:00:00", duration:"00:05:00"},{startTime:"15:09:00", duration:"00:05:00"}]]};
-
-  scheduleByZone: any = { z1: [[{startTime:"16:00:00", duration:"00:05:00"}, {startTime:"17:00:00", duration:"00:05:00"},{startTime:"18:00:00", duration:"00:05:00"},{startTime:"19:00:00", duration:"00:05:00"},{startTime:"20:00:00", duration:"00:05:00"},{startTime:"21:00:00", duration:"00:05:00"},{startTime:"22:09:00", duration:"00:05:00"}],
-                               [{startTime: "", duration:""}, {startTime:"23:00:00", duration:"00:05:00"}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}, {startTime: "", duration:""}]] };
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService ) {
     this.crc32ID = null;
@@ -34,7 +29,6 @@ export class HnidScheduleComponent implements OnInit {
       this.irrData.getSchedule( tmpID ).subscribe({
         next: data => {
           this.schedule = data;
-          //this.schedule.zoneStatistics = [{appliedModifiers:[], zoneName:"Test Zone", zoneid:"z1", avgSecondsPerDay: 10, baseSeconds: 100, secondsPerDay: { Sunday:0, Monday:0, Tuesday:0, Wednesday:0, Thursday:0, Friday:0, Saturday:0 }, totalSeconds:800}, {appliedModifiers:[], zoneName:"Test Zone 2", zoneid:"z2", avgSecondsPerDay: 10, baseSeconds: 100, secondsPerDay: { Sunday:0, Monday:0, Tuesday:0, Wednesday:0, Thursday:0, Friday:0, Saturday:0 }, totalSeconds:800}]
           console.log(this.schedule);
         },
         error: err => {
@@ -88,11 +82,21 @@ export class HnidScheduleComponent implements OnInit {
     return "";
   }
 
-  getZoneScheduleStartTime( zoneid: string, row: number, day: number ) : string {
-    return row + "," + day;
+  getZoneScheduleStartTime( zoneid: string, row: number, day: string ) : string {
+
+    var zs : any = this.schedule.zoneStatistics.find(obj => {
+      return obj.zoneid == zoneid;
+    })
+
+    return zs.startsByDay[day][row].startTime;
   }
 
-  getZoneScheduleDuration( zoneid: string, row: number, day: number ) : string {
-    return row + "," + day;
+  getZoneScheduleDuration( zoneid: string, row: number, day: string ) : string {
+
+    var zs : any = this.schedule.zoneStatistics.find(obj => {
+      return obj.zoneid == zoneid;
+    })
+
+    return zs.startsByDay[day][row].duration;
   }
 }

@@ -1,3 +1,22 @@
+.schedule-inhibit-warning-box {
+    max-width: 1200px;
+    margin: 10px;
+    background-color: lightyellow;
+    display: flex;
+    flex-direction: row;
+}
+
+.schedule-inhibit-warning-icon {
+    color: red;
+    transform: scale(2);
+}
+
+.schedule-inhibit-warning-text {
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 1.25em;
+} 
+ 
 .schedule-byzone-pane {
     max-width: 1200px;
 }
