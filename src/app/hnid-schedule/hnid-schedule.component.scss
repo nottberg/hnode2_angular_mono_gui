@@ -39,6 +39,27 @@
     text-align: center;
 }
 
+.zone-inhibit-warning-box {
+    margin: 30px;
+    background-color: lightyellow;
+    display: flex;
+    flex-direction: row;
+}
+
+.zone-inhibit-warning-icon {
+    color: orangered;
+    margin-top: 10px;
+    margin-left: 10px;
+    transform: scale(1.5);
+}
+
+.zone-inhibit-warning-text {
+    margin-top: 10px;
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 1em;
+} 
+
 .schedule-zli-tt-title {
     font-weight: bold;
     font-size: 1.1em;

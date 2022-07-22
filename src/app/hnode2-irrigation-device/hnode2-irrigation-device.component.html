@@ -14,20 +14,84 @@ timezone: string;
         <app-hnid-nav-list></app-hnid-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-card>
-            <mat-card-content *ngIf="status">
-                <p><strong>Date: </strong>{{status.date}}</p>
-                <p><strong>Time: </strong>{{status.time}}</p>
-                <p><strong>Time Zone: </strong>{{status.timezone}}</p>
-                <p><strong>Scheduler State: </strong>{{status.schedulerState}}</p>
-                <!--
-                <mat-button-toggle-group name="schedulerStateButton" aria-label="Scheduling State" [value]="status.schedulerState">
-                    <mat-button-toggle value="enabled" (change)="changeSchedulerState($event.value)">Enabled</mat-button-toggle>
-                    <mat-button-toggle value="disabled" (change)="changeSchedulerState($event.value)">Disabled</mat-button-toggle>
-                </mat-button-toggle-group>
-            -->
-                <p><strong>Health: </strong>{{status.overallHealth.status}}  {{status.overallHealth.msg}}</p>
-            </mat-card-content> 
-        </mat-card>
+        <div class="status-panel">
+        <table *ngIf="status">
+            <tr>
+                <th class="status-title-cell">Time</th>
+                <td class="status-data-cell">
+                    <p class="status-date-text">{{status.date}}</p>
+                    <p class="status-time-text">{{status.time}}</p>
+                    <p class="status-tz-text">{{status.timezone}}</p>
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Device Health</th>
+                <td class="status-data-cell">
+                    <div class="status-data-div1" *ngIf="status.overallHealth.status==='OK'">
+                        <mat-icon class="ok-check-icon">check_circle</mat-icon>
+                        <p class="status-div-text">Operating Normally</p>
+                    </div>
+                    <div class="status-data-div2" *ngIf="status.overallHealth.status!='OK'">
+                        <mat-icon class="warning-icon">warning</mat-icon>
+                        <p class="status-div-text">{{status.overallHealth.status}}</p>
+                        <p class="status-div-text">{{status.overallHealth.msg}}</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Scheduler Status</th>
+                <td class="status-data-cell">
+                    <div class="status-data-div1" *ngIf="status.schedulerInhibitID===''">
+                        <mat-icon class="ok-check-icon">check_circle</mat-icon>
+                        <p class="status-div-text">Scheduling Active</p>
+                    </div>
+                    <div class="status-data-div2" *ngIf="status.schedulerInhibitID!=''">
+                        <mat-icon class="block-icon">block</mat-icon>
+                        <p class="status-div-text">Scheduling delayed due to {{status.schedulerInhibitName}}, which will expire on {{status.schedulerInhibitExpirationDateStr}}</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Active Sequence</th>
+                <td class="status-data-cell">
+                    <div class="status-data-div1" *ngIf="status.activeSequenceID===''">
+                        <p class="status-div-text">None</p>
+                    </div>
+                    <div class="status-data-div2" *ngIf="status.activeSequenceID!=''">
+                        <mat-icon class="water-drop-icon">water_drop</mat-icon>
+                        <p class="status-div-text">{{status.activeSequenceName}}</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Active Zones</th>
+                <td class="status-data-cell">
+                    <div class="status-data-div1" *ngIf="status.activeZones.length==0">
+                        <p class="status-div-text">None</p>
+                    </div>
+                    <div class="status-data-list-container">
+                        <div class="status-data-list-item" *ngFor="let zone of status.activeZones">
+                            <mat-icon class="water-drop-icon">water_drop</mat-icon>
+                            <p class="status-div-text">{{zone.name}}</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Delayed Zones</th>
+                <td class="status-data-cell">
+                    <div class="status-data-div1" *ngIf="status.inhibitedZones.length==0">
+                        <p class="status-div-text">None</p>
+                    </div>
+                    <div class="status-data-list-container">
+                        <div class="status-data-list-item" *ngFor="let zone of status.inhibitedZones">
+                            <mat-icon class="block-icon">block</mat-icon>
+                            <p class="status-div-text">{{zone.name}}</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div>
     </mat-sidenav-content>        
 </mat-sidenav-container>

@@ -225,13 +225,19 @@ export interface HNIrrOverallHealth {
 };
 
 export interface HNIrrStatus {
+  activeSequenceID: string;
+  activeSequenceName: string;
   activeZones: NamedObj[];
+  inhibitedZones: NamedObj[];
   date: string;
   activeInhibitCnt: number;
   overallHealth: HNIrrOverallHealth;
   schedulerState: string;
   time: string;
   timezone: string;
+  schedulerInhibitID: string;
+  schedulerInhibitName: string;
+  schedulerInhibitExpirationDateStr: string;
 };
 
 export interface ScheduleAction {
@@ -312,13 +318,19 @@ export interface OverallHealth {
 };
 
 export interface Status {
+  activeSequenceID: string;
+  activeSequenceName: string;
   activeZones: NamedObj[];
+  inhibitedZones: NamedObj[];
   date: string;
   activeInhibitCnt: number;
   overallHealth: OverallHealth;
   schedulerState: string;
   time: string;
   timezone: string;
+  schedulerInhibitID: string;
+  schedulerInhibitName: string;
+  schedulerInhibitExpirationDateStr: string;
 };
 
 export interface HNIrrSchedulerState {
@@ -385,13 +397,19 @@ export class IrrigationDataService {
     return rObs.pipe(
       map<HNIrrStatus, Status>(irrStatus => {
         let status : Status = {
+          activeSequenceID: irrStatus.activeSequenceID,
+          activeSequenceName: irrStatus.activeSequenceName,
           activeZones: irrStatus.activeZones,
+          inhibitedZones: irrStatus.inhibitedZones,
           activeInhibitCnt: 0,
           date: irrStatus.date,
           overallHealth: irrStatus.overallHealth,
           schedulerState: irrStatus.schedulerState,
           time: irrStatus.time,
-          timezone: irrStatus.timezone
+          timezone: irrStatus.timezone,
+          schedulerInhibitID: irrStatus.schedulerInhibitID,
+          schedulerInhibitName: irrStatus.schedulerInhibitName,
+          schedulerInhibitExpirationDateStr: irrStatus.schedulerInhibitExpirationDateStr
         }
         return status;
       }))

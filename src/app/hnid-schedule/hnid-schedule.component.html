@@ -10,9 +10,13 @@
         <mat-tab-group>
             <mat-tab label="By Zone">
                 <div class="schedule-byzone-pane">
-                    <p class="schedule-zone-intro">This tab displays scheduling data broken out on a per zone basis.  Times are displayed in a HH:MM:SS format.  Durations are in a #h#m#s format.  Modifier calculations which are shown in seconds per week.</p>
+                    <p class="schedule-zone-intro">This tab displays scheduling data broken out on a per zone basis.  Times are displayed in a HH:MM:SS format.  Durations are in a #h#m#s format.  Modifier calculations are shown in seconds per week.</p>
                             <div class="schedule-zone-list-item" *ngFor="let zs of schedule.zoneStatistics">
                                 <h3 class="schedule-zli-title">{{zs.zoneName}}</h3>
+                                <div *ngIf="zs.inhibitedByID != ''" class="zone-inhibit-warning-box">
+                                    <mat-icon class="zone-inhibit-warning-icon">warning</mat-icon>
+                                    <p class="zone-inhibit-warning-text" >This zone is currently disabled due to "{{zs.inhibitName}}", a delay which expires on {{zs.inhibitExpirationDateStr}}!</p>
+                                </div>                       
                                 <div class="schedule-zli-modcalc">
                                     <p class="schedule-zli-tt-title">Total Time Calculation</p>
                                     <table class="scalc-table">
