@@ -219,6 +219,14 @@ export interface HNIrrSchedule {
   schedulerInhibitName: string;  
 };
 
+export interface HNIrrZoneInhibitInfo {
+  id: string;
+  inhibitByID: string;
+  inhibitExpirationDateStr: string;
+  inhibitName: string;
+  name: string;
+};
+
 export interface HNIrrOverallHealth {
   msg: string;
   status: string;
@@ -228,7 +236,7 @@ export interface HNIrrStatus {
   activeSequenceID: string;
   activeSequenceName: string;
   activeZones: NamedObj[];
-  inhibitedZones: NamedObj[];
+  inhibitedZones: HNIrrZoneInhibitInfo[];
   date: string;
   activeInhibitCnt: number;
   overallHealth: HNIrrOverallHealth;
@@ -312,6 +320,14 @@ export interface Schedule {
   schedulerInhibitName: string;
 };
 
+export interface ZoneInhibitInfo {
+  id: string;
+  inhibitByID: string;
+  inhibitExpirationDateStr: string;
+  inhibitName: string;
+  name: string;
+};
+
 export interface OverallHealth {
   msg: string;
   status: string;
@@ -321,7 +337,7 @@ export interface Status {
   activeSequenceID: string;
   activeSequenceName: string;
   activeZones: NamedObj[];
-  inhibitedZones: NamedObj[];
+  inhibitedZones: ZoneInhibitInfo[];
   date: string;
   activeInhibitCnt: number;
   overallHealth: OverallHealth;
@@ -360,7 +376,7 @@ export interface NMObjSelectionTracker {
 })
 export class IrrigationDataService {
 
-  private proxyURL = "http://storage2.home/hnode2/mgmt/device-proxy";
+  private proxyURL = "/hnode2/mgmt/device-proxy";
 
   private switchURL = 'hnode2/irrigation/switches';
   private zonesURL = 'hnode2/irrigation/zones';

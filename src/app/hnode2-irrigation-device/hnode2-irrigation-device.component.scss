@@ -5,6 +5,9 @@
 .status-title-cell {
     text-align: right;
     font-size: 1.5em;
+    background-color: lightgrey;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .status-data-cell {
@@ -70,7 +73,7 @@
 
 .block-icon {
     margin-top: 5px;
-    margin-left: 10ps;
+    margin-left: 10px;
     color: red;
 }
 

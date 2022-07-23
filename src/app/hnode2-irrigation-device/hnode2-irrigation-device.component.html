@@ -47,7 +47,7 @@ timezone: string;
                     </div>
                     <div class="status-data-div2" *ngIf="status.schedulerInhibitID!=''">
                         <mat-icon class="block-icon">block</mat-icon>
-                        <p class="status-div-text">Scheduling delayed due to {{status.schedulerInhibitName}}, which will expire on {{status.schedulerInhibitExpirationDateStr}}</p>
+                        <p class="status-div-text">Scheduling delayed due to "{{status.schedulerInhibitName}}", which will expire on {{status.schedulerInhibitExpirationDateStr}}</p>
                     </div>
                 </td>
             </tr>
@@ -86,7 +86,7 @@ timezone: string;
                     <div class="status-data-list-container">
                         <div class="status-data-list-item" *ngFor="let zone of status.inhibitedZones">
                             <mat-icon class="block-icon">block</mat-icon>
-                            <p class="status-div-text">{{zone.name}}</p>
+                            <p class="status-div-text">{{zone.name}} is delayed by "{{zone.inhibitName}}", which will expire on {{zone.inhibitExpirationDateStr}}</p>
                         </div>
                     </div>
                 </td>

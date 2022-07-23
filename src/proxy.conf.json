@@ -1,0 +1,6 @@
+{
+    "/hnode2/mgmt": {
+        "target": "http://storage2.home/",
+        "secure": false
+    }
+}
