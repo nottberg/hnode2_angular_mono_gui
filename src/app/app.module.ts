@@ -50,6 +50,7 @@ import { HnidControlsComponent } from './hnid-controls/hnid-controls.component';
 import { HnidInhibitsComponent } from './hnid-inhibits/hnid-inhibits.component';
 import { HnidInhibitEditDialogComponent } from './hnid-inhibit-edit-dialog/hnid-inhibit-edit-dialog.component';
 import { HnidNavListComponent } from './hnid-nav-list/hnid-nav-list.component';
+import { HomeDeviceConfigDialogComponent } from './home-device-config-dialog/home-device-config-dialog.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { HnidNavListComponent } from './hnid-nav-list/hnid-nav-list.component';
     HnidControlsComponent,
     HnidInhibitsComponent,
     HnidInhibitEditDialogComponent,
-    HnidNavListComponent
+    HnidNavListComponent,
+    HomeDeviceConfigDialogComponent
   ],
   imports: [
     BrowserModule,
