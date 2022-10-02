@@ -1,0 +1,85 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+        <app-hnmd-nav-list></app-hnmd-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-tab-group>
+            <mat-tab label="Device Service Mappings">
+                <!--
+                <div class="controls-device-pane">
+                    <h3>Rain Delay</h3>
+                    <p>The automatic scheduling of zone activations can be delayed for a set period of time with the following buttons.  To cancel a previously set delay, please consult the 'Delays' panel via the left navigation bar.</p>
+                    <section class="device-delay-bar">
+                        <div class="device-button-row-label">Delay Scheduling:</div>
+                        <div class="device-button-row">
+                            <button mat-stroked-button id="dsdelay-12h" (click)="delayScheduler($event)">12 hour</button>
+                            <button mat-stroked-button id="dsdelay-24h" (click)="delayScheduler($event)">24 hour</button>
+                            <button mat-stroked-button id="dsdelay-36h" (click)="delayScheduler($event)">36 hour</button>
+                            <button mat-stroked-button id="dsdelay-custom" (click)="delayScheduler($event)">Custom Duration</button>
+                            <button mat-stroked-button id="dsdelay-noexpiration" (click)="delayScheduler($event)">No Expiration</button>
+                        </div>
+                    </section>
+                </div>
+            -->
+            </mat-tab>
+            <mat-tab label="Default Service Mappings">
+                <!--
+                <mat-list class="controls-zone-control-pane">
+                    <mat-list-item *ngFor="let zone of zoneList">
+                        <div matLine class="zone-actions-list-item">
+                            <mat-expansion-panel matLine>
+                                <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                <h3>{{zone.name}}</h3>
+                                <div class="zone-actions-active-notification" *ngIf="zoneActive(zone.zoneid)">
+                                <mat-icon class="zone-actions-active-icon">check_circle</mat-icon>
+                                <p class="zone-actions-active-msg">Zone Active</p>
+                                </div>
+                                </mat-panel-title>
+                                </mat-expansion-panel-header>
+                            </mat-expansion-panel>
+                            <section matLine class="zone-actions-activate-bar">
+                                <div class="button-row-label">Activate Zone:</div>
+                                <div class="button-row">
+                                    <button mat-stroked-button id="activate-30s-{{zone.zoneid}}" (click)="activateZone($event)">30 sec</button>
+                                    <button mat-stroked-button id="activate-1m-{{zone.zoneid}}" (click)="activateZone($event)">1 min</button>
+                                    <button mat-stroked-button id="activate-5m-{{zone.zoneid}}" (click)="activateZone($event)">5 min</button>
+                                    <button mat-stroked-button id="activate-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
+                                </div>
+                            </section>
+                            <section matLine class="zone-actions-inhibit-bar">
+                                <div class="button-row-label">Disable Zone:</div>
+                                <div class="button-row">
+                                    <button mat-stroked-button id="inhibit-12h-{{zone.zoneid}}" (click)="activateZone($event)">12 hour</button>
+                                    <button mat-stroked-button id="inhibit-24h-{{zone.zoneid}}" (click)="activateZone($event)">24 hour</button>
+                                    <button mat-stroked-button id="inhibit-36h-{{zone.zoneid}}" (click)="activateZone($event)">36 hour</button>
+                                    <button mat-stroked-button id="inhibit-custom-{{zone.zoneid}}" (click)="activateZone($event)">Custom Duration</button>
+                                    <button mat-stroked-button id="inhibit-noexpire-{{zone.zoneid}}" (click)="activateZone($event)">No Expiration</button>
+                                </div>
+                            </section>       
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            -->
+            </mat-tab>
+            <mat-tab label="Service Endpoints">
+                <!--
+                <div class="controls-cancel-sequence-pane" *ngIf="isSequenceActive() == true">
+                    <h3>Cancel Running Sequence</h3>
+                    <p>Press the button below to stop the execution of the currently running sequence.</p>
+                    <button mat-stroked-button (click)="cancelActiveSequence()">Cancel Sequence: {{getActiveSequenceName()}}</button>
+                </div>
+                <div class="controls-execute-sequence-pane" *ngIf="isSequenceActive() == false">
+                    <p>Select the stored sequence to be executed in the drop down selection box and then press the 'Execute Sequence' button to begin execution on the controller.  To create a new stored sequence please consult the 'Sequences' panel via the left navigation bar.</p>
+                    <div class="controls-sequence-select">
+                        <mat-select [(value)]="this.selectedSequenceID">
+                            <mat-option *ngFor="let seq of sequenceList" value="{{seq.sequenceid}}">{{seq.name}}</mat-option>
+                        </mat-select>
+                    </div>
+                    <button mat-stroked-button (click)="executeSequence()">Execute Sequence</button>
+                </div>
+            -->
+            </mat-tab>            
+        </mat-tab-group>
+    </mat-sidenav-content>        
+</mat-sidenav-container>

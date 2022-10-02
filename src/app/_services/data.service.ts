@@ -32,13 +32,17 @@ export interface DeviceInventory {
   unavailableDevices: Device[];
 };
 
+export interface ServiceInventory {
+  providerSet: any;
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
   constructor(private http: HttpClient) { }
 
-  getPublicContent(): Observable<any> {
+  getDeviceInventory(): Observable<any> {
     return this.http.get(API_URL + 'device-inventory', { responseType: 'json' });
   }
 
@@ -78,6 +82,10 @@ export class DataService {
     console.log( "postDeviceConfigUpdate - ", cmdData);
 
     return this.postDeviceCommandRequest( crc32ID, cmdData );
+  }
+
+  getServicesContent(): Observable<any> {
+    return this.http.get(API_URL + 'device-services', { responseType: 'json' });
   }
 
 }

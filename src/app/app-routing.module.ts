@@ -14,12 +14,16 @@ import { HnidModifiersComponent } from './hnid-modifiers/hnid-modifiers.componen
 import { HnidSequencesComponent } from './hnid-sequences/hnid-sequences.component';
 import { HnidInhibitsComponent } from './hnid-inhibits/hnid-inhibits.component';
 import { Hnode2TestDeviceComponent } from './hnode2-test-device/hnode2-test-device.component';
+import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
+import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'mgmt-dashboard', component: MgmtDashboardComponent },
+  { path: 'cluster/devices', component: HnmdDevicesComponent },
+  { path: 'cluster/services', component: HnmdServicesComponent },
   { path: 'hnode2-management-device/:crc32ID', component: Hnode2ManagementDeviceComponent },
   { path: 'hnode2-irrigation-device/:crc32ID', component: Hnode2IrrigationDeviceComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/controls', component: HnidControlsComponent },  
