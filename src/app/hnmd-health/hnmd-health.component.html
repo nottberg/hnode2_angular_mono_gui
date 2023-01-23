@@ -1,0 +1,23 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+        <app-hnmd-nav-list></app-hnmd-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <dx-tree-list #treeListVar id="health-treelist"
+            [dataSource]="healthArraySource"
+            rootValue=""
+            keyExpr="id"
+            parentIdExpr="parentID">
+            <dxi-column dataField="name" caption="Name" [width]="200"></dxi-column>
+            <dxi-column dataField="status" caption="Status" [width]="100" cellTemplate="myTemplate"></dxi-column>
+            <div *dxTemplate="let cell of 'myTemplate'">
+                <div *ngIf="cell.text == 'OK'" style="background-color:lightgreen">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'DEGRADED'" style="background-color:rgb(247, 247, 119)">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'FAILED'" style="background-color:rgb(243, 109, 109)">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'UNKNOWN'">{{ cell.text }}</div>
+            </div>
+            <dxi-column dataField="errCode" caption="Error Code" [width]="100"></dxi-column>
+            <dxi-column dataField="alertText" caption="Notes"></dxi-column>
+        </dx-tree-list>
+    </mat-sidenav-content>        
+</mat-sidenav-container>

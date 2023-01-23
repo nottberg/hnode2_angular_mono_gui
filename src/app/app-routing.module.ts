@@ -16,6 +16,7 @@ import { HnidInhibitsComponent } from './hnid-inhibits/hnid-inhibits.component';
 import { Hnode2TestDeviceComponent } from './hnode2-test-device/hnode2-test-device.component';
 import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
 import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
+import { HnmdHealthComponent } from './hnmd-health/hnmd-health.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'mgmt-dashboard', component: MgmtDashboardComponent },
   { path: 'cluster/devices', component: HnmdDevicesComponent },
   { path: 'cluster/services', component: HnmdServicesComponent },
+  { path: 'cluster/health', component: HnmdHealthComponent },
   { path: 'hnode2-management-device/:crc32ID', component: Hnode2ManagementDeviceComponent },
   { path: 'hnode2-irrigation-device/:crc32ID', component: Hnode2IrrigationDeviceComponent },
   { path: 'hnode2-irrigation-device/:crc32ID/controls', component: HnidControlsComponent },  

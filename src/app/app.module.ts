@@ -29,6 +29,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { LoginComponent } from './login/login.component';
+
+import { DxTreeListModule } from 'devextreme-angular';
+
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MgmtDashboardComponent } from './mgmt-dashboard/mgmt-dashboard.component';
@@ -54,6 +57,8 @@ import { HomeDeviceConfigDialogComponent } from './home-device-config-dialog/hom
 import { HnmdNavListComponent } from './hnmd-nav-list/hnmd-nav-list.component';
 import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
 import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
+import { HnmdHealthComponent } from './hnmd-health/hnmd-health.component';
+
 
 @NgModule({
   declarations: [
@@ -82,7 +87,8 @@ import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
     HomeDeviceConfigDialogComponent,
     HnmdNavListComponent,
     HnmdServicesComponent,
-    HnmdDevicesComponent
+    HnmdDevicesComponent,
+    HnmdHealthComponent
   ],
   imports: [
     BrowserModule,
@@ -111,7 +117,8 @@ import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
     MatRadioModule,
     FormsModule,
     ReactiveFormsModule,
-    DragDropModule
+    DragDropModule,
+    DxTreeListModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]
