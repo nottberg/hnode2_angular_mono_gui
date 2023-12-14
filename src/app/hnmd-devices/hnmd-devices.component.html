@@ -19,15 +19,16 @@
                 <p mat-line class="demo-2"> <strong>Discovery ID: </strong>{{device.discID}} </p>
                 <p mat-line class="demo-2"> <strong>Hnode ID: </strong>{{device.hnodeID}} </p>
                 <p mat-line class="demo-2"> <strong>CRC32 ID: </strong>{{device.crc32ID}} </p>
+                <p mat-line class="demo-2"> <strong>Hex ID: </strong>{{device.hexID}} </p>
                 <p *ngFor="let addr of device.addresses"><strong>Net Addr:</strong> {{addr.type}}  {{addr.address}}  {{addr.port}}</p>       
               </mat-expansion-panel>
-              <button mat-button (click)="onEditButtonClick( device.crc32ID )">
+              <button mat-button (click)="onEditButtonClick( device.hexID )">
                 <mat-icon>settings</mat-icon>
               </button>      
-              <button mat-button (click)="onReleaseDevice( device.crc32ID )">
+              <button mat-button (click)="onReleaseDevice( device.hexID )">
                 <mat-icon>link_off</mat-icon>
               </button>
-              <button mat-button routerLink="/{{device.deviceType}}/{{device.crc32ID}}">
+              <button mat-button routerLink="/{{device.deviceType}}/{{device.hexID}}">
                 <mat-icon>start</mat-icon>
               </button>
               <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
@@ -47,12 +48,13 @@
                   <p mat-line class="demo-2"> <strong>Discovery ID: </strong>{{device.discID}} </p>
                   <p mat-line class="demo-2"> <strong>Hnode ID: </strong>{{device.hnodeID}} </p>
                   <p mat-line class="demo-2"> <strong>CRC32 ID: </strong>{{device.crc32ID}} </p>
+                  <p mat-line class="demo-2"> <strong>Hex ID: </strong>{{device.hexID}} </p>
                   <p *ngFor="let addr of device.addresses"><strong>Net Addr:</strong> {{addr.type}}  {{addr.address}}  {{addr.port}}</p>       
                 </mat-expansion-panel>
-                <button mat-button (click)="onClaimDevice( device.crc32ID )">
+                <button mat-button (click)="onClaimDevice( device.hexID )">
                   <mat-icon>add_link</mat-icon>
                 </button>  
-                <button mat-button routerLink="/{{device.deviceType}}/{{device.crc32ID}}">
+                <button mat-button routerLink="/{{device.deviceType}}/{{device.hexID}}">
                   <mat-icon>start</mat-icon>
                 </button>
                 <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
@@ -72,6 +74,7 @@
                   <p mat-line class="demo-2"> <strong>Discovery ID: </strong>{{device.discID}} </p>
                   <p mat-line class="demo-2"> <strong>Hnode ID: </strong>{{device.hnodeID}} </p>
                   <p mat-line class="demo-2"> <strong>CRC32 ID: </strong>{{device.crc32ID}} </p>
+                  <p mat-line class="demo-2"> <strong>Hex ID: </strong>{{device.hexID}} </p>
                   <p *ngFor="let addr of device.addresses"><strong>Net Addr:</strong> {{addr.type}}  {{addr.address}}  {{addr.port}}</p>       
                 </mat-expansion-panel>
               </mat-list-item>    

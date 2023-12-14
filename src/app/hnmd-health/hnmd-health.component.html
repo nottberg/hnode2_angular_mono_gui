@@ -9,6 +9,9 @@
             keyExpr="id"
             parentIdExpr="parentID">
             <dxi-column dataField="name" caption="Name" [width]="200"></dxi-column>
+            <dxi-column type="buttons" [width]="40">
+                <dxi-button icon="info" [onClick]="showDescription"></dxi-button>
+            </dxi-column>
             <dxi-column dataField="status" caption="Status" [width]="100" cellTemplate="myTemplate"></dxi-column>
             <div *dxTemplate="let cell of 'myTemplate'">
                 <div *ngIf="cell.text == 'OK'" style="background-color:lightgreen">{{ cell.text }}</div>

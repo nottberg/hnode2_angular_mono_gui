@@ -6,7 +6,7 @@ import { stringToKeyValue } from '@angular/flex-layout/extended/style/style-tran
 const API_URL = '/hnode2/mgmt/';
 
 export interface DeviceConfig {
-  crc32ID: string;
+  hexID: string;
   name: string;
 };
 
@@ -17,7 +17,8 @@ export interface DeviceAddress {
 };
 
 export interface Device {
-  crc32ID: string;
+  crc32ID: number;
+  hexID: string;
   name: string;
   hnodeID: string;
   discID: string;
@@ -442,25 +443,25 @@ export class DataService {
     return this.http.get(API_URL + 'device-inventory', { responseType: 'json' });
   }
 
-  postDeviceCommandRequest( crc32ID: string, cmdFields: Record< string, any > ): Observable<any> {
-    const reqURL = API_URL + 'device-inventory/' + crc32ID + '/command';
+  postDeviceCommandRequest( hexID: string, cmdFields: Record< string, any > ): Observable<any> {
+    const reqURL = API_URL + 'device-inventory/' + hexID + '/command';
     return this.http.post<string>( reqURL, JSON.stringify( cmdFields ), { observe: 'response', headers: {'Content-Type':'application/json'} });
   }
 
-  postClaimDeviceRequest( crc32ID: string ): Observable<any> {
+  postClaimDeviceRequest( hexID: string ): Observable<any> {
     let cmdData : Record< string, any > = { "command": "claim" };
-    return this.postDeviceCommandRequest( crc32ID, cmdData );
+    return this.postDeviceCommandRequest( hexID, cmdData );
   }
 
-  postReleaseDeviceRequest( crc32ID: string ): Observable<any> {
+  postReleaseDeviceRequest( hexID: string ): Observable<any> {
     let cmdData : Record< string, any > = { "command": "release" };
-    return this.postDeviceCommandRequest( crc32ID, cmdData );
+    return this.postDeviceCommandRequest( hexID, cmdData );
   }
 
-  postDeviceConfigUpdate( crc32ID: string, updFields: Record< string, any > ): Observable<any> {
+  postDeviceConfigUpdate( hexID: string, updFields: Record< string, any > ): Observable<any> {
     let cmdData : Record< string, any > = { "command": "update_device_fields" };
 
-    console.log( crc32ID );
+    console.log( hexID );
     console.log( updFields );
     console.log( Object.keys(updFields) );
     for( let index in Object.keys(updFields) )
@@ -473,7 +474,7 @@ export class DataService {
 
     console.log( "postDeviceConfigUpdate - ", cmdData);
 
-    return this.postDeviceCommandRequest( crc32ID, cmdData );
+    return this.postDeviceCommandRequest( hexID, cmdData );
   }
 
   getServicesContent(): Observable<any> {

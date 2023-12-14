@@ -29,9 +29,9 @@ export class HnmdDevicesComponent implements OnInit {
     this.updateDeviceInventory();
   }
 
-  onClaimDevice( crc32ID : string ): void {
-    console.log( "onClaimDevice click - " + crc32ID );
-    this.dataService.postClaimDeviceRequest( crc32ID ).subscribe({
+  onClaimDevice( hexID : string ): void {
+    console.log( "onClaimDevice click - " + hexID );
+    this.dataService.postClaimDeviceRequest( hexID ).subscribe({
       next: string => {
         this.updateDeviceInventory();
       },
@@ -41,9 +41,9 @@ export class HnmdDevicesComponent implements OnInit {
     });
   }
 
-  onReleaseDevice( crc32ID : string ): void {
-    console.log( "onReleaseDevice click - " + crc32ID );
-    this.dataService.postReleaseDeviceRequest( crc32ID ).subscribe({
+  onReleaseDevice( hexID : string ): void {
+    console.log( "onReleaseDevice click - " + hexID );
+    this.dataService.postReleaseDeviceRequest( hexID ).subscribe({
       next: string => {
         this.updateDeviceInventory();
       },
@@ -53,7 +53,7 @@ export class HnmdDevicesComponent implements OnInit {
     });
   }
 
-  onEditButtonClick( crc32ID : string ): void
+  onEditButtonClick( hexID : string ): void
   {
     const dialogCfg = new MatDialogConfig();
 
@@ -61,12 +61,12 @@ export class HnmdDevicesComponent implements OnInit {
 
     //console.log(this.content.);
     
-    let curConfig : DeviceConfig = { crc32ID: "", name: "" };
+    let curConfig : DeviceConfig = { hexID: "", name: "" };
     for( const device of this.content.ownedDevices )
     {
-      if( device.crc32ID = crc32ID )
+      if( device.hexID = hexID )
       {
-        curConfig.crc32ID = device.crc32ID;
+        curConfig.hexID = device.hexID;
         curConfig.name = device.name;
       }
     }
@@ -82,7 +82,7 @@ export class HnmdDevicesComponent implements OnInit {
       data => {
         if( data )
         {
-          var updateFields: Record<string,any> = {crc32ID: curConfig.crc32ID};
+          var updateFields: Record<string,any> = {hexID: curConfig.hexID};
           console.log("Dialog output:", data);
           
           if( data.updFlags & DCUPD_NAME )
@@ -90,7 +90,7 @@ export class HnmdDevicesComponent implements OnInit {
 
           console.log( updateFields );
 
-          this.dataService.postDeviceConfigUpdate( crc32ID, updateFields ).subscribe(()=>{
+          this.dataService.postDeviceConfigUpdate( hexID, updateFields ).subscribe(()=>{
             this.updateDeviceInventory();
           });
         }

@@ -71,5 +71,9 @@ export class HnmdHealthComponent implements OnInit {
     console.log("health component ngOnInit");
   }
 
+  showDescription( e: any ): void {
+    console.log("showDescription");
+    console.log( e );
+  }
   
 }
