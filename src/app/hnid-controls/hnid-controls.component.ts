@@ -10,7 +10,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 })
 export class HnidControlsComponent implements OnInit {
 
-  crc32ID: string | null;
+  hexID: string | null;
   errMsg : string;
 
   status: Status | null = null;
@@ -28,13 +28,13 @@ export class HnidControlsComponent implements OnInit {
   selectedSequenceID: any;
 
   constructor(private route: ActivatedRoute, private irrData: IrrigationDataService) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.errMsg = "";
   }
 
   refreshControlsConfig() : void {
     //this.selection.clear();
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.getControlsConfig( tmpID ).subscribe({
       next: data => {
         this.status = data.status;
@@ -60,7 +60,7 @@ export class HnidControlsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
+      this.hexID = params.get('hexID');
       this.refreshControlsConfig();
     });    
   }
@@ -90,14 +90,14 @@ export class HnidControlsComponent implements OnInit {
 
   changeSchedulerState(value : string) : void {
     console.log("schState change: " + value);
-    //const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    //const tmpID: string = this.hexID !== null ? this.hexID : '';
     //this.irrData.postScheduleEnableOperation(tmpID, ((value == "enabled") ? true : false ));
   }
 
   executeSequence() : void {
     console.log("Execute Sequence");
     console.log(this.selectedSequenceID);
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.postExecSequenceOperation( tmpID, this.selectedSequenceID ).subscribe(resp=>{
       console.log('Sequence Started');
       //setTimeout(() => {this.refreshStatusConfig()}, 250);
@@ -132,7 +132,7 @@ export class HnidControlsComponent implements OnInit {
     console.log(this.oneTimeZoneIDList);
     console.log(this.onDuration);
     console.log(this.offDuration);
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.postExecOneTimeSequenceOperation( tmpID, this.onDuration, this.offDuration, this.oneTimeZoneIDList ).subscribe(resp=>{
       console.log('One Time Sequence Started');
       //setTimeout(() => {this.refreshStatusConfig()}, 250);
@@ -209,7 +209,7 @@ export class HnidControlsComponent implements OnInit {
         return;
       }
 
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+      const tmpID: string = this.hexID !== null ? this.hexID : '';
       this.irrData.postExecOneTimeSequenceOperation( tmpID, onDurationStr, "00:00:00", [zoneID] ).subscribe(resp=>{
         console.log('Single Zone Sequence Started');
         //setTimeout(() => {this.refreshStatusConfig()}, 250);

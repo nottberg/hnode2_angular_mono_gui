@@ -22,7 +22,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class HnidInhibitsComponent implements OnInit {
   
-  crc32ID : string | null;
+  hexID : string | null;
   errMsg : string;
 
   znmList: NamedObj[] = [];
@@ -34,13 +34,13 @@ export class HnidInhibitsComponent implements OnInit {
   columnsToDisplay : string[] = ['select', 'nameCol', 'typeCol', 'expiresCol', 'zoneCol'];
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.errMsg = "";     
   }
 
   refreshInhibitsConfig() : void {
     this.selection.clear();
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.getInhibitsConfig( tmpID ).subscribe({
       next: data => {
         this.inhibitsList = data.inhibitsList;
@@ -60,8 +60,8 @@ export class HnidInhibitsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
-      console.log(this.crc32ID);
+      this.hexID = params.get('hexID');
+      console.log(this.hexID);
       this.refreshInhibitsConfig();
     });
   }
@@ -122,7 +122,7 @@ export class HnidInhibitsComponent implements OnInit {
 
           console.log( updateFields );
 
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.postCreateInhibit( tmpID, updateFields ).subscribe(resp=>{
             console.log("Inhibit Created")
             this.refreshInhibitsConfig();
@@ -158,7 +158,7 @@ export class HnidInhibitsComponent implements OnInit {
         if( data )
         {
           console.log("Delete confirmed");
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.deleteInhibit( tmpID, curInhibit.inhibitid ).subscribe(resp=>{
             console.log("Inhibit Deleted")
             this.refreshInhibitsConfig();

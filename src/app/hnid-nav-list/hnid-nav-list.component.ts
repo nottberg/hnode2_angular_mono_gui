@@ -8,14 +8,14 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class HnidNavListComponent implements OnInit {
 
-  crc32ID : string | null = null;
+  hexID : string | null = null;
 
   constructor( private route: ActivatedRoute ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
-      console.log(this.crc32ID);
+      this.hexID = params.get('hexID');
+      console.log(this.hexID);
     });
 
   }

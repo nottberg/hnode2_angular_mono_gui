@@ -7,15 +7,15 @@ import { ActivatedRoute, ParamMap } from '@angular/router'
   styleUrls: ['./hnode2-management-device.component.scss']
 })
 export class Hnode2ManagementDeviceComponent implements OnInit {
-  crc32ID: string | null
+  hexID: string | null
 
   constructor(private route: ActivatedRoute) {
-    this.crc32ID = null;
+    this.hexID = null;
   }
   
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID')
+      this.hexID = params.get('hexID')
     })    
   }
 }

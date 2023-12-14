@@ -21,7 +21,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ]
 })
 export class HnidPlacementsComponent implements OnInit {
-  crc32ID : string | null;
+  hexID : string | null;
   errMsg : string;
 
   znmList: NamedObj[] = [];
@@ -35,13 +35,13 @@ export class HnidPlacementsComponent implements OnInit {
   expandedElement: Placement | null = null;
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.errMsg = "";     
   }
 
   refreshPlacementsConfig() : void {
     this.selection.clear();
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.getPlacementsConfig( tmpID ).subscribe({
       next: data => {
         this.placementsList = data.placementsList;
@@ -62,7 +62,7 @@ export class HnidPlacementsComponent implements OnInit {
   ngOnInit(): void {
     
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
+      this.hexID = params.get('hexID');
       this.refreshPlacementsConfig();
     });
 
@@ -149,7 +149,7 @@ export class HnidPlacementsComponent implements OnInit {
           
           console.log( updateFields );
 
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.putUpdatePlacement( tmpID, curPlat.placementid, updateFields ).subscribe(resp=>{
             console.log('Placement Updated');
             this.refreshPlacementsConfig();
@@ -199,7 +199,7 @@ export class HnidPlacementsComponent implements OnInit {
 
           console.log( updateFields );
 
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.postCreatePlacement( tmpID, updateFields ).subscribe(resp=>{
             console.log('Placement Created');
             this.refreshPlacementsConfig();
@@ -236,7 +236,7 @@ export class HnidPlacementsComponent implements OnInit {
         if( data )
         {
           console.log("Delete confirmed");
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.deletePlacement( tmpID, curPlat.placementid ).subscribe(resp=>{
             console.log('Placement Deleted');
             this.refreshPlacementsConfig();

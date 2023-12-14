@@ -396,18 +396,18 @@ export class IrrigationDataService {
     throw new Error('Method not implemented.');
   }
 
-  createReqURL( rootURL : string, crc32ID : string, reqURL : string ) : string {
-      const resultURL = rootURL + "/" + crc32ID + "/" + reqURL;
+  createReqURL( rootURL : string, hexID : string, reqURL : string ) : string {
+      const resultURL = rootURL + "/" + hexID + "/" + reqURL;
       return resultURL;
   }
 
-  createReqURLWithID( rootURL : string, crc32ID : string, reqURL : string, objID : string ) : string {
-    const resultURL = rootURL + "/" + crc32ID + "/" + reqURL + "/" + objID;
+  createReqURLWithID( rootURL : string, hexID : string, reqURL : string, objID : string ) : string {
+    const resultURL = rootURL + "/" + hexID + "/" + reqURL + "/" + objID;
     return resultURL;
   }
 
-  getStatus( crc32ID : string ) : Observable<Status> {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.statusURL );
+  getStatus( hexID : string ) : Observable<Status> {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.statusURL );
     const rObs = this.http.get<HNIrrStatus>( reqURL );
         
     return rObs.pipe(
@@ -431,8 +431,8 @@ export class IrrigationDataService {
       }))
   }
 
-  getSchedule( crc32ID : string ): Observable<Schedule> {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.schURL );
+  getSchedule( hexID : string ): Observable<Schedule> {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.schURL );
     const rObs = this.http.get<HNIrrSchedule>( reqURL );
         
     return rObs.pipe(
@@ -442,8 +442,8 @@ export class IrrigationDataService {
       }))
   }
 
-  getZonesList( crc32ID : string ) : Observable<Zone[]> {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.zonesURL );
+  getZonesList( hexID : string ) : Observable<Zone[]> {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.zonesURL );
     const rObs = this.http.get<HNIrrZone[]>( reqURL );
         
     return rObs.pipe(
@@ -465,8 +465,8 @@ export class IrrigationDataService {
     }))
   }
 
-  getZoneNameList( crc32ID : string ) : Observable<NamedObj[]>{
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.zonesURL );
+  getZoneNameList( hexID : string ) : Observable<NamedObj[]>{
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.zonesURL );
 
     return this.http.get<HNIrrZone[]>( reqURL )
       .pipe( 
@@ -484,8 +484,8 @@ export class IrrigationDataService {
         }))
   }
 
-  getSwitchList( crc32ID : string ) : Observable<NamedObj[]> {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.switchURL );
+  getSwitchList( hexID : string ) : Observable<NamedObj[]> {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.switchURL );
 
     return this.http.get<HNIrrSwitch[]>( reqURL )
       .pipe(
@@ -503,9 +503,9 @@ export class IrrigationDataService {
         }))
   } 
 
-  getZoneConfig( crc32ID : string ) : Observable<ZoneConfig> {
-    const zoneObs$ = this.getZonesList( crc32ID );
-    const swObs$ = this.getSwitchList( crc32ID );
+  getZoneConfig( hexID : string ) : Observable<ZoneConfig> {
+    const zoneObs$ = this.getZonesList( hexID );
+    const swObs$ = this.getSwitchList( hexID );
 
     const combo$ = combineLatest([zoneObs$, swObs$]);
 
@@ -529,23 +529,23 @@ export class IrrigationDataService {
     return cbObs$;
   }
 
-  putUpdateZone( crc32ID : string, zid: string, updFields: Record< string, any > ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.zonesURL, zid );
+  putUpdateZone( hexID : string, zid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.zonesURL, zid );
     return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
   }
 
-  postCreateZone( crc32ID : string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.zonesURL );
+  postCreateZone( hexID : string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.zonesURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  deleteZone( crc32ID : string, zid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.zonesURL, zid );
+  deleteZone( hexID : string, zid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.zonesURL, zid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getPlacementsList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.placementsURL );
+  getPlacementsList( hexID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.placementsURL );
     const rObs = this.http.get<HNIrrPlacement[]>( reqURL );
         
     return rObs.pipe(
@@ -569,9 +569,9 @@ export class IrrigationDataService {
 
   }
 
-  getPlacementsConfig( crc32ID: string ) : Observable<PlacementConfig> {
-    const placementsObs$ = this.getPlacementsList( crc32ID );
-    const znmObs$ = this.getZoneNameList( crc32ID );
+  getPlacementsConfig( hexID: string ) : Observable<PlacementConfig> {
+    const placementsObs$ = this.getPlacementsList( hexID );
+    const znmObs$ = this.getZoneNameList( hexID );
 
     const combo$ = combineLatest([placementsObs$, znmObs$]);
 
@@ -595,23 +595,23 @@ export class IrrigationDataService {
     return cbObs$;
   }
 
-  putUpdatePlacement( crc32ID: string, pid: string, updFields: Record< string, any > ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.placementsURL, pid );
+  putUpdatePlacement( hexID: string, pid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.placementsURL, pid );
     return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
   }
 
-  postCreatePlacement( crc32ID: string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.placementsURL );
+  postCreatePlacement( hexID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.placementsURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  deletePlacement( crc32ID: string, pid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.placementsURL, pid );
+  deletePlacement( hexID: string, pid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.placementsURL, pid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getModifiersList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.modifiersURL );
+  getModifiersList( hexID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.modifiersURL );
     const rObs = this.http.get<HNIrrModifier[]>( reqURL );
         
     return rObs.pipe(
@@ -633,9 +633,9 @@ export class IrrigationDataService {
 
   }
 
-  getModifiersConfig( crc32ID: string ) : Observable<ModifiersConfig> {
-    const modifiersObs$ = this.getModifiersList( crc32ID );
-    const znmObs$ = this.getZoneNameList( crc32ID );
+  getModifiersConfig( hexID: string ) : Observable<ModifiersConfig> {
+    const modifiersObs$ = this.getModifiersList( hexID );
+    const znmObs$ = this.getZoneNameList( hexID );
 
     const combo$ = combineLatest([modifiersObs$, znmObs$]);
 
@@ -659,23 +659,23 @@ export class IrrigationDataService {
     return cbObs$;
   }
 
-  putUpdateModifier( crc32ID: string, mid: string, updFields: Record< string, any > ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.modifiersURL, mid );
+  putUpdateModifier( hexID: string, mid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.modifiersURL, mid );
     return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
   }
 
-  postCreateModifier( crc32ID: string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.modifiersURL );
+  postCreateModifier( hexID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.modifiersURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  deleteModifier( crc32ID: string, mid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.modifiersURL, mid );
+  deleteModifier( hexID: string, mid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.modifiersURL, mid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getSequencesList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.sequencesURL );
+  getSequencesList( hexID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.sequencesURL );
     const rObs = this.http.get<HNIrrSequence[]>( reqURL );
         
     return rObs.pipe(
@@ -698,9 +698,9 @@ export class IrrigationDataService {
 
   }
 
-  getSequencesConfig( crc32ID: string ) : Observable<SequenceConfig> {
-    const sequencesObs$ = this.getSequencesList( crc32ID );
-    const znmObs$ = this.getZoneNameList( crc32ID );
+  getSequencesConfig( hexID: string ) : Observable<SequenceConfig> {
+    const sequencesObs$ = this.getSequencesList( hexID );
+    const znmObs$ = this.getZoneNameList( hexID );
 
     const combo$ = combineLatest([sequencesObs$, znmObs$]);
 
@@ -724,23 +724,23 @@ export class IrrigationDataService {
     return cbObs$;
   }
 
-  putUpdateSequence( crc32ID: string, pid: string, updFields: Record< string, any > ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.sequencesURL, pid );
+  putUpdateSequence( hexID: string, pid: string, updFields: Record< string, any > ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.sequencesURL, pid );
     return this.http.put<string>( reqURL, JSON.stringify( updFields ), { observe: 'response' } );
   }
 
-  postCreateSequence( crc32ID: string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.sequencesURL );
+  postCreateSequence( hexID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.sequencesURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  deleteSequence( crc32ID: string, pid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.sequencesURL, pid );
+  deleteSequence( hexID: string, pid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.sequencesURL, pid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getInhibitsList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.inhibitsURL );
+  getInhibitsList( hexID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.inhibitsURL );
     const rObs = this.http.get<HNIrrInhibit[]>( reqURL );
         
     return rObs.pipe(
@@ -762,9 +762,9 @@ export class IrrigationDataService {
 
   }
 
-  getInhibitsConfig( crc32ID: string ) : Observable<InhibitConfig> {
-    const inhibitsObs$ = this.getInhibitsList( crc32ID );
-    const znmObs$ = this.getZoneNameList( crc32ID );
+  getInhibitsConfig( hexID: string ) : Observable<InhibitConfig> {
+    const inhibitsObs$ = this.getInhibitsList( hexID );
+    const znmObs$ = this.getZoneNameList( hexID );
 
     const combo$ = combineLatest([inhibitsObs$, znmObs$]);
 
@@ -788,18 +788,18 @@ export class IrrigationDataService {
     return cbObs$;
   }
 
-  postCreateInhibit( crc32ID: string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.inhibitsURL );
+  postCreateInhibit( hexID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.inhibitsURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  deleteInhibit( crc32ID: string, pid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.inhibitsURL, pid );
+  deleteInhibit( hexID: string, pid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.inhibitsURL, pid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getSchedulerEnabledState( crc32ID : string ) : Observable<SchedulerState> {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.schedulerStateURL );
+  getSchedulerEnabledState( hexID : string ) : Observable<SchedulerState> {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.schedulerStateURL );
 
     return this.http.get<SchedulerState>( reqURL )
       .pipe(
@@ -812,8 +812,8 @@ export class IrrigationDataService {
         }))
   } 
 
-  getOperationsList( crc32ID : string ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.operationsURL );
+  getOperationsList( hexID : string ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.operationsURL );
     const rObs = this.http.get<HNIrrOperation[]>( reqURL );
         
     return rObs.pipe(
@@ -831,13 +831,13 @@ export class IrrigationDataService {
 
   }
 
-  postCreateOperation( crc32ID: string, createFields: Record< string, any> ) {
-    const reqURL = this.createReqURL( this.proxyURL, crc32ID, this.operationsURL );
+  postCreateOperation( hexID: string, createFields: Record< string, any> ) {
+    const reqURL = this.createReqURL( this.proxyURL, hexID, this.operationsURL );
     console.log( reqURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
   }
 
-  postScheduleEnableOperation( crc32ID : string, enabled : boolean ) {
+  postScheduleEnableOperation( hexID : string, enabled : boolean ) {
 
     const opFields : Record< string, any> = {
       "type":"scheduler_state",
@@ -847,20 +847,20 @@ export class IrrigationDataService {
     console.log("postSchEnable");
     console.log( opFields );
 
-    return this.postCreateOperation( crc32ID, opFields );
+    return this.postCreateOperation( hexID, opFields );
   }
 
-  postExecSequenceOperation( crc32ID : string, sequenceID : string ) {
+  postExecSequenceOperation( hexID : string, sequenceID : string ) {
 
     const opFields : Record< string, any> = {
       "type":"exec_sequence",
       "objIDList":[sequenceID] 
     };
 
-    return this.postCreateOperation( crc32ID, opFields );
+    return this.postCreateOperation( hexID, opFields );
   }
 
-  postExecOneTimeSequenceOperation( crc32ID: string, onDuration: string, offDuration: string, objIDList: string[] ) {
+  postExecOneTimeSequenceOperation( hexID: string, onDuration: string, offDuration: string, objIDList: string[] ) {
 
     const opFields : Record< string, any> = {
       "type":"exec_onetimeseq",
@@ -869,18 +869,18 @@ export class IrrigationDataService {
       "objIDList":objIDList 
     };
 
-    return this.postCreateOperation( crc32ID, opFields );
+    return this.postCreateOperation( hexID, opFields );
   }
 
-  cancelOperation( crc32ID: string, oid: string ) {
-    const reqURL = this.createReqURLWithID( this.proxyURL, crc32ID, this.operationsURL, oid );
+  cancelOperation( hexID: string, oid: string ) {
+    const reqURL = this.createReqURLWithID( this.proxyURL, hexID, this.operationsURL, oid );
     return this.http.delete( reqURL, { observe: 'response' } );
   }
 
-  getControlsConfig( crc32ID : string ) : Observable<ControlsConfig> {
-    const statusObs$ = this.getStatus( crc32ID );
-    const zoneObs$ = this.getZonesList( crc32ID );
-    const seqObs$ = this.getSequencesList( crc32ID );
+  getControlsConfig( hexID : string ) : Observable<ControlsConfig> {
+    const statusObs$ = this.getStatus( hexID );
+    const zoneObs$ = this.getZonesList( hexID );
+    const seqObs$ = this.getSequencesList( hexID );
 
     const combo$ = combineLatest([statusObs$, zoneObs$, seqObs$]);
 

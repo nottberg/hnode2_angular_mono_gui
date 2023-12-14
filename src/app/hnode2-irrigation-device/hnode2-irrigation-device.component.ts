@@ -9,18 +9,18 @@ import { IrrigationDataService, Status } from '../_services/irrigation-data.serv
 })
 export class Hnode2IrrigationDeviceComponent implements OnInit {
   
-  crc32ID: string | null;
+  hexID: string | null;
   status: Status | null;
   errMsg : string;
 
   constructor(private route: ActivatedRoute, private irrData: IrrigationDataService) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.status = null;
     this.errMsg = "";
   }
   
   refreshStatusConfig() : void {
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.getStatus( tmpID ).subscribe({
       next: data => {
         this.status = data;
@@ -34,14 +34,14 @@ export class Hnode2IrrigationDeviceComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID')
+      this.hexID = params.get('crc32ID')
       this.refreshStatusConfig();
     });
   }
 
   changeSchedulerState(value : string) : void {
       console.log("schState change: " + value);
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+      const tmpID: string = this.hexID !== null ? this.hexID : '';
       this.irrData.postScheduleEnableOperation(tmpID, ((value == "enabled") ? true : false )).subscribe(resp=>{
         console.log('Scheduler State Updated');
         setTimeout(() => {this.refreshStatusConfig()}, 250);

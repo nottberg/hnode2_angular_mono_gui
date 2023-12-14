@@ -22,7 +22,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class HnidZonesComponent implements OnInit {
   
-  crc32ID : string | null;
+  hexID : string | null;
   errMsg : string;
 
   switchList: NamedObj[] = [];
@@ -36,13 +36,13 @@ export class HnidZonesComponent implements OnInit {
   expandedElement: Zone | null = null;
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService, private dialog: MatDialog ) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.errMsg = "";     
   }
 
   refreshZoneConfig() : void {
     this.selection.clear();
-    const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+    const tmpID: string = this.hexID !== null ? this.hexID : '';
     this.irrData.getZoneConfig( tmpID ).subscribe({
       next: data => {
         this.zoneList = data.zoneList;
@@ -63,7 +63,7 @@ export class HnidZonesComponent implements OnInit {
   ngOnInit(): void {
     
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
+      this.hexID = params.get('hexID');
       this.refreshZoneConfig();
     });
 
@@ -136,7 +136,7 @@ export class HnidZonesComponent implements OnInit {
 
           console.log( updateFields );
 
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.putUpdateZone( tmpID, curZone.zoneid, updateFields ).subscribe(()=>{
             this.refreshZoneConfig();
           });
@@ -187,7 +187,7 @@ export class HnidZonesComponent implements OnInit {
 
           console.log( updateFields );
 
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.postCreateZone( tmpID, updateFields ).subscribe(()=>{
             this.refreshZoneConfig();
           });
@@ -222,7 +222,7 @@ export class HnidZonesComponent implements OnInit {
         if( data )
         {
           console.log("Delete confirmed");
-          const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+          const tmpID: string = this.hexID !== null ? this.hexID : '';
           this.irrData.deleteZone( tmpID, curZone.zoneid ).subscribe(()=>{
               this.refreshZoneConfig();
           });

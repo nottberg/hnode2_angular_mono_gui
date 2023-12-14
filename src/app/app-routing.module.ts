@@ -17,6 +17,7 @@ import { Hnode2TestDeviceComponent } from './hnode2-test-device/hnode2-test-devi
 import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
 import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
 import { HnmdHealthComponent } from './hnmd-health/hnmd-health.component';
+import { Hnode2SlideDigitizerDeviceComponent } from './hnode2-slide-digitizer-device/hnode2-slide-digitizer-device.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -26,16 +27,17 @@ const routes: Routes = [
   { path: 'cluster/devices', component: HnmdDevicesComponent },
   { path: 'cluster/services', component: HnmdServicesComponent },
   { path: 'cluster/health', component: HnmdHealthComponent },
-  { path: 'hnode2-management-device/:crc32ID', component: Hnode2ManagementDeviceComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID', component: Hnode2IrrigationDeviceComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/controls', component: HnidControlsComponent },  
-  { path: 'hnode2-irrigation-device/:crc32ID/schedule', component: HnidScheduleComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/zones', component: HnidZonesComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/placements', component: HnidPlacementsComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/modifiers', component: HnidModifiersComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/sequences', component: HnidSequencesComponent },
-  { path: 'hnode2-irrigation-device/:crc32ID/inhibits', component: HnidInhibitsComponent },
-  { path: 'hnode2-test-device/:crc32ID', component: Hnode2TestDeviceComponent },
+  { path: 'hnode2-management-device/:hexID', component: Hnode2ManagementDeviceComponent },
+  { path: 'hnode2-irrigation-device/:hexID', component: Hnode2IrrigationDeviceComponent },
+  { path: 'hnode2-irrigation-device/:hexID/controls', component: HnidControlsComponent },  
+  { path: 'hnode2-irrigation-device/:hexID/schedule', component: HnidScheduleComponent },
+  { path: 'hnode2-irrigation-device/:hexID/zones', component: HnidZonesComponent },
+  { path: 'hnode2-irrigation-device/:hexID/placements', component: HnidPlacementsComponent },
+  { path: 'hnode2-irrigation-device/:hexID/modifiers', component: HnidModifiersComponent },
+  { path: 'hnode2-irrigation-device/:hexID/sequences', component: HnidSequencesComponent },
+  { path: 'hnode2-irrigation-device/:hexID/inhibits', component: HnidInhibitsComponent },
+  { path: 'hnode2-test-device/:hexID', component: Hnode2TestDeviceComponent },
+  { path: 'hnode2-slide-digitizer-device/:hexID', component: Hnode2SlideDigitizerDeviceComponent },  
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

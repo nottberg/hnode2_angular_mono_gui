@@ -9,7 +9,7 @@ import { IrrigationDataService, Schedule, ScheduleZoneStatistics } from '../_ser
 })
 export class HnidScheduleComponent implements OnInit {
 
-  crc32ID: string | null;
+  hexID: string | null;
   errMsg : string;
 
   displayedColumns: string[] = ['name', 'start', 'end', 'duration'];
@@ -18,14 +18,14 @@ export class HnidScheduleComponent implements OnInit {
   schedule: Schedule = this.nullSchedule;
 
   constructor( private route: ActivatedRoute, private irrData: IrrigationDataService ) {
-    this.crc32ID = null;
+    this.hexID = null;
     this.errMsg = "";    
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.crc32ID = params.get('crc32ID');
-      const tmpID: string = this.crc32ID !== null ? this.crc32ID : '';
+      this.hexID = params.get('hexID');
+      const tmpID: string = this.hexID !== null ? this.hexID : '';
       this.irrData.getSchedule( tmpID ).subscribe({
         next: data => {
           this.schedule = data;
