@@ -34,7 +34,7 @@ export class Hnode2IrrigationDeviceComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
-      this.hexID = params.get('crc32ID')
+      this.hexID = params.get('hexID')
       this.refreshStatusConfig();
     });
   }

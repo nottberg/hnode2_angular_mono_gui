@@ -59,6 +59,8 @@ import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
 import { HnmdDevicesComponent } from './hnmd-devices/hnmd-devices.component';
 import { HnmdHealthComponent } from './hnmd-health/hnmd-health.component';
 import { Hnode2SlideDigitizerDeviceComponent } from './hnode2-slide-digitizer-device/hnode2-slide-digitizer-device.component';
+import { HnsdNavListComponent } from './hnsd-nav-list/hnsd-nav-list.component';
+import { HnsdCapturesComponent } from './hnsd-captures/hnsd-captures.component';
 
 
 @NgModule({
@@ -90,7 +92,9 @@ import { Hnode2SlideDigitizerDeviceComponent } from './hnode2-slide-digitizer-de
     HnmdServicesComponent,
     HnmdDevicesComponent,
     HnmdHealthComponent,
-    Hnode2SlideDigitizerDeviceComponent
+    Hnode2SlideDigitizerDeviceComponent,
+    HnsdNavListComponent,
+    HnsdCapturesComponent
   ],
   imports: [
     BrowserModule,

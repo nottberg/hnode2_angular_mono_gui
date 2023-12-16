@@ -1,0 +1,61 @@
+.status-panel {
+    margin: 30px;
+}
+
+.status-title-cell {
+    text-align: right;
+    font-size: 1.5em;
+    background-color: lightgrey;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.status-data-cell {
+    display: flex;
+    flex-direction: row;
+}
+
+.status-data-div1 {
+    display: flex;
+    flex-direction: row;
+}
+
+.status-data-div2 {
+    display: flex;
+    flex-direction: row;
+}
+
+.status-data-list-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-data-list-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.status-date-text {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 1.5em;
+}
+
+.status-time-text {
+    margin-top: 10px;
+    margin-left: 20px;
+    font-size: 1.5em;    
+}
+
+.status-tz-text {
+    margin-top: 10px;
+    margin-left: 20px;
+    font-size: 1.5em;    
+}
+
+.status-div-text {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 1.5em;    
+}
+

@@ -1,0 +1,53 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+      <app-hnsd-nav-list></app-hnsd-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar>
+            <button mat-button (click)="onNewButtonClick()">
+                Start New Capture
+                <mat-icon>add_circle</mat-icon>
+            </button>
+        </mat-toolbar>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Capture Parameters</mat-panel-title>
+                <mat-panel-description>Expand to customize capture request parameters.</mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-toolbar>
+                <mat-toolbar-row>
+                    <mat-checkbox>Enable</mat-checkbox>
+                    <mat-form-field><mat-label></mat-label><input matInput></mat-form-field>
+                </mat-toolbar-row>
+                <mat-toolbar-row>
+                    <mat-checkbox>Enable</mat-checkbox>
+                    <mat-form-field><mat-label></mat-label><input matInput></mat-form-field>
+                </mat-toolbar-row>
+            </mat-toolbar>
+        </mat-expansion-panel>
+        <dx-tree-list #treeListVar id="health-treelist"
+            [dataSource]="captureListSource"
+            rootValue=""
+            keyExpr="id">
+            <dxi-column dataField="id" caption="ID" [width]="200"></dxi-column>
+            <dxi-column dataField="orderIndex" caption="Order Index" [width]="100"></dxi-column>
+            <dxi-column dataField="state" caption="State" [width]="200"></dxi-column>
+            <dxi-column dataField="fileCount" caption="File Count" [width]="100"></dxi-column>
+
+            <dxi-column type="buttons" [width]="40">
+                <dxi-button icon="info" [onClick]="showDescription"></dxi-button>
+            </dxi-column>
+<!--            
+            <dxi-column dataField="status" caption="Status" [width]="100" cellTemplate="myTemplate"></dxi-column>
+            <div *dxTemplate="let cell of 'myTemplate'">
+                <div *ngIf="cell.text == 'OK'" style="background-color:lightgreen">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'DEGRADED'" style="background-color:rgb(247, 247, 119)">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'FAILED'" style="background-color:rgb(243, 109, 109)">{{ cell.text }}</div>
+                <div *ngIf="cell.text == 'UNKNOWN'">{{ cell.text }}</div>
+            </div>
+            <dxi-column dataField="errCode" caption="Error Code" [width]="100"></dxi-column>
+            <dxi-column dataField="alertText" caption="Notes"></dxi-column>
+        -->
+        </dx-tree-list>
+    </mat-sidenav-content>        
+</mat-sidenav-container>

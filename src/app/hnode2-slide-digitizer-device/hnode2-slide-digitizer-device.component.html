@@ -1,0 +1,36 @@
+<!--
+activeZones: string[];
+date: string;
+disabledZones: string[];
+inhibitUntil: string;
+inhibitZones: string[];
+overallHealth: OverallHealth;
+schedulerState: string;
+time: string;
+timezone: string;
+-->
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+        <app-hnsd-nav-list></app-hnsd-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="status-panel">
+        <table *ngIf="status">
+            <tr>
+                <th class="status-title-cell">Date</th>
+                <td class="status-data-cell">
+                    <p class="status-date-text">{{status.date}}</p>
+                    <p class="status-time-text">{{status.time}}</p>
+                    <!-- <p class="status-tz-text">{{status.timezone}}</p> -->
+                </td>
+            </tr>
+            <tr>
+                <th class="status-title-cell">Device State</th>
+                <td class="status-data-cell">
+                    <p class="status-div-text">{{status.deviceState}}</p>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </mat-sidenav-content>        
+</mat-sidenav-container>
