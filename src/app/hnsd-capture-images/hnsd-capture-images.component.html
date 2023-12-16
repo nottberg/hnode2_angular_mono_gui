@@ -1,0 +1,27 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" opened>
+      <app-hnsd-nav-list></app-hnsd-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <h2>Capture Info</h2>
+        <table>
+            <tr><td>ID</td><td>{{curCapture.id}}</td></tr>
+            <tr><td>Order Index</td><td>{{curCapture.orderIndex}}</td></tr>
+            <tr><td>State</td><td>{{curCapture.state}}</td></tr>
+            <tr><td>File Count</td><td>{{curCapture.fileCount}}</td></tr>
+        </table>
+        <h2>Capture Images</h2>
+        <mat-tab-group>
+            <mat-tab *ngFor="let tab of curCapture.fileList; let index = index" [label]="tab.purpose">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{tab.filename}}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <img mat-card-image [src]="getImageURL(tab.index)">
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav-content>        
+</mat-sidenav-container>

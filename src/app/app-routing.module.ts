@@ -19,6 +19,7 @@ import { HnmdServicesComponent } from './hnmd-services/hnmd-services.component';
 import { HnmdHealthComponent } from './hnmd-health/hnmd-health.component';
 import { Hnode2SlideDigitizerDeviceComponent } from './hnode2-slide-digitizer-device/hnode2-slide-digitizer-device.component';
 import { HnsdCapturesComponent } from './hnsd-captures/hnsd-captures.component';
+import { HnsdCaptureImagesComponent } from './hnsd-capture-images/hnsd-capture-images.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -39,7 +40,8 @@ const routes: Routes = [
   { path: 'hnode2-irrigation-device/:hexID/inhibits', component: HnidInhibitsComponent },
   { path: 'hnode2-test-device/:hexID', component: Hnode2TestDeviceComponent },
   { path: 'hnode2-slide-digitizer-device/:hexID', component: Hnode2SlideDigitizerDeviceComponent },
-  { path: 'hnode2-slide-digitizer-device/:hexID/captures', component: HnsdCapturesComponent },  
+  { path: 'hnode2-slide-digitizer-device/:hexID/captures', component: HnsdCapturesComponent },
+  { path: 'hnode2-slide-digitizer-device/:hexID/captures/:capID', component: HnsdCaptureImagesComponent },  
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

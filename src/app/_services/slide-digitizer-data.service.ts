@@ -5,46 +5,29 @@ import { combineLatest, Observable } from 'rxjs';
 
 export interface HNSDStatus {
   deviceState: string;
-//  activeSequenceName: string;
-//  activeZones: NamedObj[];
-//  inhibitedZones: HNIrrZoneInhibitInfo[];
   date: string;
-//  activeInhibitCnt: number;
-//  overallHealth: HNIrrOverallHealth;
-//  schedulerState: string;
   time: string;
-//  timezone: string;
-//  schedulerInhibitID: string;
-//  schedulerInhibitName: string;
-//  schedulerInhibitExpirationDateStr: string;
 };
 
 export interface Status {
   deviceState: string;
-//  activeSequenceName: string;
-//  activeZones: NamedObj[];
-//  inhibitedZones: ZoneInhibitInfo[];
   date: string;
-//  activeInhibitCnt: number;
-//  overallHealth: OverallHealth;
-//  schedulerState: string;
   time: string;
-//  timezone: string;
-//  schedulerInhibitID: string;
-//  schedulerInhibitName: string;
-//  schedulerInhibitExpirationDateStr: string;
+};
+
+export interface CaptureFile {
+  index: number;
+  filename: string;
+  purpose: string;
+  timestamp: string;
 };
 
 export interface Capture {
   id: string;
-//  parentID: string;
-//  name: string;
-//  status: string;
-//  devCRC32ID: string;
-};
-
-export interface CaptureList {
-  captureArray: Capture[];
+  orderIndex: number;
+  state: string;
+  fileCount: number;
+  fileList: CaptureFile[];
 };
 
 @Injectable({
@@ -87,5 +70,15 @@ export class SlideDigitizerDataService {
   postStartCapture( hexID: string, createFields: Record< string, any> ) {
     const reqURL = this.createReqURL( this.proxyURL, hexID, this.capturesURL );
     return this.http.post<string>( reqURL, JSON.stringify( createFields ), { observe: 'response' } );
+  }
+
+  getCapture( hexID : string, capID : string ): Observable<any> {
+    const reqURL = this.proxyURL + "/" + hexID + "/" + this.capturesURL + "/" + capID;
+    return this.http.get(reqURL, { responseType: 'json' });
+  }
+
+  getCaptureImageURL( hexID: string, capID: string, imgIdx : number ): string {
+    const reqURL = this.proxyURL + "/" + hexID + "/" + this.capturesURL + "/" + capID +"/image/" + imgIdx;
+    return reqURL;    
   }
 }
