@@ -45,13 +45,12 @@ export class HnsdCaptureImagesComponent implements OnInit {
     });    
   }
 
-  getImageURL( imgIndex : number ) : string {
-    if( this.hexID == null || this.capID == null )
+  getImageURL( fileID : string ) : string {
+    if( this.hexID == null )
       return "";
     
     const hID: string = this.hexID !== null ? this.hexID : '';
-    const cID: string = this.capID !== null ? this.capID : '';
-    return this.dataService.getCaptureImageURL( hID, cID, imgIndex );
+    return this.dataService.getCaptureImageURL( hID, fileID );
   }
 
 }

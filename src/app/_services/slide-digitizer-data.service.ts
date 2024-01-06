@@ -27,7 +27,7 @@ export interface Capture {
   orderIndex: number;
   state: string;
   fileCount: number;
-  fileList: CaptureFile[];
+  fileIDList: string[];
 };
 
 @Injectable({
@@ -38,6 +38,7 @@ export class SlideDigitizerDataService {
   private proxyURL = "/hnode2/mgmt/device-proxy";
 
   private statusURL = 'hnode2/slide-digitizer/status';
+  private filesURL = 'hnode2/slide-digitizer/files';
   private capturesURL = 'hnode2/slide-digitizer/captures';
 
   constructor( private http: HttpClient ) { }
@@ -77,8 +78,8 @@ export class SlideDigitizerDataService {
     return this.http.get(reqURL, { responseType: 'json' });
   }
 
-  getCaptureImageURL( hexID: string, capID: string, imgIdx : number ): string {
-    const reqURL = this.proxyURL + "/" + hexID + "/" + this.capturesURL + "/" + capID +"/image/" + imgIdx;
+  getCaptureImageURL( hexID: string, fileID : string ): string {
+    const reqURL = this.proxyURL + "/" + hexID + "/" + this.filesURL + "/" + fileID +"/download";
     return reqURL;    
   }
 }

@@ -12,13 +12,13 @@
         </table>
         <h2>Capture Images</h2>
         <mat-tab-group>
-            <mat-tab *ngFor="let tab of curCapture.fileList; let index = index" [label]="tab.purpose">
+            <mat-tab *ngFor="let tab of curCapture.fileIDList; let index = index" [label]="tab">
                 <mat-card>
                     <mat-card-header>
-                        <mat-card-title>{{tab.filename}}</mat-card-title>
+                        <mat-card-title>{{tab}}</mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                        <img mat-card-image [src]="getImageURL(tab.index)">
+                        <img mat-card-image [src]="getImageURL(tab)">
                     </mat-card-content>
                 </mat-card>
             </mat-tab>
